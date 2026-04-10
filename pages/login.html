@@ -39,14 +39,29 @@ document.getElementById('loginFormUser').addEventListener('submit', function(eve
     let passwordUser = document.getElementById('passwordUser').value;
     
     // Verificação do Login e senha
-        if(emailUser === 'user@email.com' && passwordUser === '123') {
-            window.location.href = '../index.html';
+    if(emailUser === 'user@email.com' && passwordUser === '123') {
+        window.location.href = '../index.html';
+        } else {
+            alet('Usuário ou senha incorretos');
+        }
+    }
+);
+
+// Login GESTOR
+document.getElementById('loginFormBoss').addEventListener('submit', function(event) {
+    event.preventDefault(); // preventDefault() evita que a página seja recarregada e o JS executa normalmente.
+    
+        let emailBoss = document.getElementById('emailBoss').value;
+        let passwordBoss = document.getElementById('passwordBoss').value;
+    
+        // Verificação do Login e senha
+        if(emailBoss === 'gestor@email.com' && passwordBoss === '456') {
+                window.location.href = '../index.html';
         } else {
             alert('Usuário ou senha incorretos');
         }
     }
 );
 
-// Login GESTOR
 </script>
 </html>
