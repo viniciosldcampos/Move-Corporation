@@ -119,4 +119,28 @@
         </section>
     </form>    
 </body>
+<script>
+/* Lista de valores no select Departament */
+    const departaments = [
+    {code: "9874", name: "Gestão de Pessoas"},
+    {code: "9887", name: "Departamento Financeiro"},
+    {code: "9134", name: "Departamento Serviços Gerais"},
+    {code: "9888", name: "Segurança do Trabalho"}
+    ];
+
+    const selectDepartment = document.getElementById('departament');
+
+    departaments.forEach(departament => {
+        let option = document.createElement('option');
+        option.value = departament.code;
+        option.text = ` ${departament.code} - ${departament.name}`;
+        
+        selectDepartment.appendChild(option);
+    }
+    );
+
+
+
+
+</script>
 </html>
