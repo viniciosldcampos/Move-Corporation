@@ -14,23 +14,39 @@
                 <label for="">E-mail</label>
                     <input type="email" name="" id="emailUser">
                 <label for="">Senha</label>
-                    <input type="password" name="" id="senhaUser">
+                    <input type="password" name="" id="passwordUser">
                 <button>Login Usuário</button>
             </div> 
         </form>
         <form id="loginFormBoss" class="card">
             <div class="bossLogin">
             <h2>Gestor</h2>
-            <label for="">E-mail</label>
-                <input type="email" name="" id="emailBoss">
-            <label for="">Senha</label>
-                <input type="password" name="" id="senhaBoss">
-                <button>Login Gestor</button>
+                <label for="">E-mail</label>
+                    <input type="email" name="" id="emailBoss">
+                <label for="">Senha</label>
+                    <input type="password" name="" id="senhaBoss">
+                    <button>Login Gestor</button>
             </div>
         </form>
     </div>
 </body>
 <script>
+// Login USUÁRIO
+document.getElementById('loginFormUser').addEventListener('submit', function(event) {
+    event.preventDefault();
     
+    let emailUser = document.getElementById('emailUser').value;
+    let passwordUser = document.getElementById('passwordUser').value;
+    
+    // Verificação do Login e senha
+        if(emailUser === 'user@email.com' && passwordUser === '123') {
+            window.location.href = '../index.html';
+        } else {
+            alert('Usuário ou senha incorretos');
+        }
+    }
+);
+
+// Login GESTOR
 </script>
 </html>
