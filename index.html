@@ -139,6 +139,26 @@
     }
     );
 
+/*====================================*/
+/* Adicionar botão de Passageiros*/
+    function addInputPassengers() {
+        let passengers = document.querySelector('.passengers');
+        let divPassengersInputs = document.createElement('div');
+
+        divPassengersInputs.classList.add('passenger');
+        divPassengersInputs.innerHTML = ` 
+            <label for="">Passageiro:</label>
+            <input type="text" name="" id="">
+            <button type="button" onclick="removeInputPassengers(this)"> - </button>
+        `;
+        
+        passengers.appendChild(divPassengersInputs);
+    }
+
+/* Remover botão de Passageiros*/
+    function removeInputPassengers(button) {
+        button.parentElement.remove();
+    }
 
 
 
