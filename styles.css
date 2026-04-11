@@ -1,7 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
 }
 
 body {
@@ -13,7 +16,7 @@ body {
 form {
     display: flex;
     flex-direction: column;
-    gap: 100px;
+    gap: 50px;
     background: white;
     padding: 35px;
     margin: auto;
@@ -38,7 +41,7 @@ form div {
 
 form label {
     font-size: 14px;
-    margin: 0 0 5px 0;
+    margin: 0 0 5px 7px;
 }
 
 form input,
@@ -54,16 +57,38 @@ form select:focus {
     border-color: #2a5298;
 }
 
+.mainInformation {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    gap: 20px;
+}
+
+.mainContact {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    gap: 20px;
+}
+
+.informationEnterprise {
+    display: grid;
+    grid-template-columns: 0.75fr 1fr;
+    gap: 20px;
+}
+
 /* Linha dupla (Data e Hora) */
 .dateHour {
     display: flex;
     flex-direction: row;
-    gap: 15px;
+    margin: 15px 0;
     align-items: center;
 }
 
 .dateHour label {
-    margin: 0px 0 5px 0;
+    margin: 0 0 5px 5px;
+}
+
+.dateHour input {
+    margin: 0 0 0 15px;
 }
 
 /* Passageiros e Paradas */
@@ -87,12 +112,15 @@ form select:focus {
 .passengers input,
 .localOrigin input,
 .localDestination input {
-    width: 94.5%;
+    width: 94%;
 }
 
 /* Botão adicionar + */
 .passengers button,
 .localOrigin button {
+    margin: 0 0 0 10px;
+    font-size: 15px;
+    width: 40px;
     padding: 10px 15px;
     border: none;
     background: #2a5298;
@@ -108,13 +136,54 @@ form select:focus {
     transform: translateY(-2px);
 }
 
-.driverInformation{
-    display: flex;
-    width: 50%;
+.driverInformation {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+    border: #ccc 1px solid;
+    border-radius: 8px;
 }
 
+.driverInformation button {
+    margin: 20px;
+    padding: 20px 20px;
+    border: none;
+    background: #2a5298;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.driverInformation button:hover {
+    background: #1e3c72;
+    transform: translateY(-2px);
+}
+    
+.moreInformationSection {
+    display: flex;
+    gap: 20px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.moreInformationSection > div > input {
+    height: 40px;
+}
+
+.moreInformation > div {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
 
 /* Botões finais */
+
+.bottonsForm {
+    display: flex;
+    justify-content: center;
+}
+
 form input[type="submit"],
 form input[type="reset"],
 form input[type="button"] {
@@ -137,5 +206,7 @@ form input[type="button"]:hover {
 form input[type="submit"],
 form input[type="reset"],
 form input[type="button"] {
-    width: 50%;
+    margin: 20px;
+    width: 20%;
+
 }

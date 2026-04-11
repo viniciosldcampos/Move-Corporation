@@ -16,35 +16,47 @@
         <!-- Campo nome -->
         <section class="section">
             <h2>SEÇÃO: Informações do Solicitante</h2>
-            <div class="name">
-                <label for=""></label>
-                <input type="text" placeholder="Digite seu nome completo">
-            </div>
-            <!-- Campo de Numero do Registro do Colaborador -->
-            <div class="numberRegistry">
-                <label for=""></label>
-                <input type="text" id="numberRegistry" name="numberRegistre" placeholder="Numero do Colaborador">
+            <div class="mainInformation">
+                <div class="name">
+                    <label for=""></label>
+                    <input type="text" placeholder="Digite seu nome completo">
+                </div>
+                <!-- Campo de Numero do Registro do Colaborador -->
+                <div class="numberRegistry">
+                    <label for=""></label>
+                    <input type="text" id="numberRegistry" name="numberRegistre" placeholder="Numero do Colaborador">
+                </div>
             </div>
             <!-- Campo de Numero do telefone de contato -->
-            <div class="contact-phone">
-                <label for="phone">Telefone</label>
-                <input type="tel" id="phone" name="phone" placeholder="(00) 12345-6789"
-                    pattern="[0-9]{3}-[0-9]{5}-[0-9]{4}">
+            <div class="mainContact">
+                <!-- Campo de email de contato -->
+                <div class="contact-email">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="usuario@dominio.com"
+                        pattern="[0-9]{3}-[0-9]{5}-[0-9]{4}">
+                </div>
+                <div class="contact-phone">
+                    <label for="phone">Telefone</label>
+                    <input type="tel" id="phone" name="phone" placeholder="(00) 12345-6789"
+                        pattern="[0-9]{3}-[0-9]{5}-[0-9]{4}">
+                </div>
             </div>
             <!-- Informações do Departamento -->
             <!-- Campo de Nome do Departamento -->
-            <div class="Departament">
-                <label for="">Departamento</label>
-                <select id="departament">
-                    <!-- <option value=''>9874 - Gestão de Pessoas</option> -->
-                </select>
-            </div>
-            <!-- Campo do Centro de Custo -->
-            <div class="costCenter">
-                <label for="">Centro de Custo</label>
-                <select>
-                    <!-- <option value=''>9874 - Gestão de Pessoas</option> -->
-                </select>
+            <div class="informationEnterprise">
+                <div class="Departament">
+                    <label for="">Departamento</label>
+                    <select id="departament">
+                        <!-- <option value=''>9874 - Gestão de Pessoas</option> -->
+                    </select>
+                </div>
+                <!-- Campo do Centro de Custo -->
+                <div class="costCenter">
+                    <label for="">Centro de Custo</label>
+                    <select id="costCenter">
+                        <!-- <option value=''>9874 - Gestão de Pessoas</option> -->
+                    </select>
+                </div>
             </div>
         </section>
 
@@ -60,7 +72,7 @@
                 <label for="">Motivo da Solicitação</label>
                 <input type="text" name="" id="">
             </div>
-
+            
             <!-- Campo de Seleção do Carro -->
             <div class="selectCar">
                 <label for="">Veículo</label>
@@ -79,9 +91,9 @@
                     <button type="button" onclick="addInputPassengers()">+</button>
                 </div>
             </div>
-
+            
             <!-- SEÇÃO: INFORMAÇÕES DATA E HORA DO Pedido de Transporte -->
-
+            
             <!-- Campo da Data e horário de Partida -->
             <div class="dateHour">
                 <label>Data </label>
@@ -89,8 +101,8 @@
                 <label>Inicio </label>
                 <input type="time" name="" id="">
             </div>
-
-
+            
+            
             <!-- Campo de Local de Partida (Origem) e Paradas no Caminho -->
             <div class="localOrigin">
                 <label>Local de Origem</label>
@@ -99,7 +111,7 @@
                     <button type="button" onclick="addRouteStop()"> + </button>
                 </div>
             </div>
-
+            
             <!-- Campo de Local de Chegada (Destino) -->
             <div class="localDestination">
                 <label>Local de Destino</label>
@@ -112,49 +124,107 @@
                 <label>Fim </label>
                 <input type="time" name="" id="">
             </div>
-            <!-- SEÇÃO: INFORMAÇÕES do MOTORISTA  -->
-
+        </section>
+        <!-- SEÇÃO: INFORMAÇÕES do MOTORISTA  -->
+        <section class="section">
             <div class="driverInformation">
                 <button>Motorista interno</button>
                 <button>Motorista externo</button>
             </div>
-
-            <!-- SEÇÃO: NECESSIDADE DE AJUDANTES E ANEXOS  -->
-
+        </section>
+        
+        <!-- SEÇÃO: NECESSIDADE DE AJUDANTES E ANEXOS  -->
+        <section class="section moreInformationSection">
             <div>
                 <label>Ajudantes</label>
-                <label for="">Arquivo</label>
+                <input type="number" name="" id="">
+            </div>
+            <div>
+                <label for="">Anexos</label>
                 <input type="file" name="" id="">
             </div>
-
         </section>
+
         <!-- SEÇÃO: BOTÕES DAS SOLICITAÇÕES -->
-        <section class="section">
-            <input type="submit" value="Confirmar">
-            <input type="reset" value="Apagar">
-            <input type="button" value="Voltar">
+        <section class="section bottonsForm">
+            <input type="reset" value="Apagar" class="botao-Apagar">
+            <input type="button" value="Voltar" class="botao-Voltar">
+            <input type="submit" value="Confirmar" class="botao-Confirmar">
         </section>
     </form>
 </body>
 <script>
-    /* Lista de valores no select Departament */
-    const departaments = [
-        { code: "9874", name: "Gestão de Pessoas" },
-        { code: "9887", name: "Departamento Financeiro" },
-        { code: "9134", name: "Departamento Serviços Gerais" },
-        { code: "9888", name: "Segurança do Trabalho" }
-    ];
+    /* Lista de Departament */
+const departaments = [
+    {
+        code: "9874",
+        name: "Gestão de Pessoas",
+        costCenters: [
+            { code: "9874-01", name: "Recrutamento e Seleção" },
+            { code: "9874-02", name: "Treinamento e Desenvolvimento" },
+            { code: "9874-03", name: "Administração de Pessoal" },
+            { code: "9874-04", name: "Benefícios" }
+        ]
+    },
+    {
+        code: "9887",
+        name: "Departamento Financeiro",
+        costCenters: [
+            { code: "9887-01", name: "Contas a Pagar" },
+            { code: "9887-02", name: "Contas a Receber" },
+            { code: "9887-03", name: "Tesouraria" },
+            { code: "9887-04", name: "Controladoria" },
+            { code: "9887-05", name: "Faturamento" }
+        ]
+    },
+    {
+        code: "9134",
+        name: "Departamento Serviços Gerais",
+        costCenters: [
+            { code: "9134-01", name: "Limpeza e Conservação" },
+            { code: "9134-02", name: "Manutenção Predial" },
+            { code: "9134-03", name: "Recepção" },
+            { code: "9134-04", name: "Portaria" }
+        ]
+    },
+    {
+        code: "9888",
+        name: "Segurança do Trabalho",
+        costCenters: [
+            { code: "9888-01", name: "Prevenção de Acidentes" },
+            { code: "9888-02", name: "Treinamentos de Segurança" },
+            { code: "9888-03", name: "Equipamentos de Proteção Individual" },
+            { code: "9888-04", name: "Inspeções de Segurança" }
+        ]
+    }
+];
 
-    const selectDepartment = document.getElementById('departament');
+const selectDepartament = document.getElementById('departament');
+const selectCostCenter = document.getElementById('costCenter');
 
+    /*Preencher Departamentos */
     departaments.forEach(departament => {
         let option = document.createElement('option');
         option.value = departament.code;
-        option.text = ` ${departament.code} - ${departament.name}`;
+        option.text = `${departament.code} - ${departament.name}`
+    
+        selectDepartament.appendChild(option);
+        
+    });
+    
+    /*Preencher Select Centro de Custo */
+    departaments.forEach(departament => {
 
-        selectDepartment.appendChild(option);
-    }
-    );
+        departament.costCenters.forEach(costCenter => {
+
+            let option = document.createElement('option');
+            option.value = costCenter.code;
+            option.text = `${costCenter.code} - ${costCenter.name}`;
+
+            selectCostCenter.appendChild(option);
+        });
+
+    });
 
     /*====================================*/
     /* Adicionar botão de Passageiros*/
