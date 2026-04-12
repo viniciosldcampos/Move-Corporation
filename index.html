@@ -53,7 +53,7 @@
             <div class="informationEnterprise">
                 <div class="Departament">
                     <label for="">Departamento</label>
-                    <select id="departament">
+                    <select id="departament" disabled>
                         <!-- <option value=''>9874 - Gestão de Pessoas</option> -->
                     </select>
                 </div>
@@ -267,10 +267,6 @@ const employees = [
     }
 ];
 
-
-
-
-
 /*================================================================*/
     /* Lista de Departament com os Centros de Custo de cada setor */
 const departaments = [
@@ -343,6 +339,22 @@ const selectCostCenter = document.getElementById('costCenter');
         });
 
     });
+    /*====================================*/
+    /* Preencher dados nome, numero de registro e departamento do usuário logado*/
+    const userLogged = JSON.parse(localStorage.getItem('userLogged'));
+
+    if(userLogged) {
+        /* Nome*/
+        document.querySelector('.name input').value = userLogged.name;
+        /* Num do colaborador*/
+        document.querySelector('.numberRegistry input').value = userLogged.registry;
+        
+        /* Departamento*/
+        document.getElementById('departament').value = userLogged.departament;
+    }
+
+
+
 
     /*====================================*/
     /* Adicionar botão de Passageiros*/
