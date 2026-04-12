@@ -20,17 +20,56 @@
         </form>
         <form id="loginFormBoss" class="card">
             <div class="bossLogin">
-            <h2>Gestor</h2>
+                <h2>Gestor</h2>
                 <label for="">E-mail</label>
                     <input type="email" name="" id="emailBoss">
                 <label for="">Senha</label>
-                    <input type="password" name="" id="passwordBoss">
-                    <button>Login Gestor</button>
+                <input type="password" name="" id="passwordBoss">
+                <button>Login Gestor</button>
             </div>
         </form>
     </div>
 </body>
 <script>
+    
+    /* Lista de usuários do sistema.*/
+    const users = [
+    {
+        email: "carlos.martins@empresa.com",
+        password: "123",
+        name: "Carlos Eduardo Martins",
+        registry: "1001",
+        departament: "10000",
+        type: "user"
+    },
+    {
+        email: "gestor.segtrabalho@empresa.com",
+        password: "123",
+        name: "Fernanda Oliveira Souza",
+        registry: "1002",
+        departament: "40000",
+        type: "user"
+    },
+    {
+        email: "ricardo.santos@empresa.com",
+        password: "123",
+        name: "Ricardo Almeida Santos",
+        registry: "1003",
+        departament: "30000",
+        type: "user"
+    },
+    {
+        email: "gestor.financeiro@empresa.com",
+        password: "456",
+        name: "Roberto Silva",
+        registry: "2001",
+        departament: "20000",
+        type: "boss"
+    }
+];
+
+
+/*================================================================*/
 // Login USUÁRIO
 document.getElementById('loginFormUser').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -38,30 +77,43 @@ document.getElementById('loginFormUser').addEventListener('submit', function(eve
     let emailUser = document.getElementById('emailUser').value;
     let passwordUser = document.getElementById('passwordUser').value;
     
-    // Verificação do Login e senha
-    if(emailUser === 'user@email.com' && passwordUser === '123') {
-        window.location.href = '../index.html';
-        } else {
-            alert('Usuário ou senha incorretos');
-        }
-    }
-);
+/* Verificação do Login e senha digitada com as informações da lista */
+const user = users.find(u => 
+    u.email === emailUser &&
+        u.password === passwordUser &&
+        u.type === "user"
+    );
 
+    if(user) {
+        localStorage.setItem("userLogged", JSON.stringify(user));
+        window.location.href= '../index.html';
+    } else {
+        alert('Usuário ou senha incorretos');
+    }
+});
+
+/*================================================================*/
 // Login GESTOR
 document.getElementById('loginFormBoss').addEventListener('submit', function(event) {
     event.preventDefault(); // preventDefault() evita que a página seja recarregada e o JS executa normalmente.
     
-        let emailBoss = document.getElementById('emailBoss').value;
-        let passwordBoss = document.getElementById('passwordBoss').value;
-    
-        // Verificação do Login e senha
-        if(emailBoss === 'gestor@email.com' && passwordBoss === '456') {
-                window.location.href = '../index.html';
-        } else {
-            alert('Usuário ou senha incorretos');
-        }
+    let emailBoss = document.getElementById('emailBoss').value;
+    let passwordBoss = document.getElementById('passwordBoss').value;
+        
+/* Verificação do Login e senha digitada com as informações da lista */
+    const user = users.find(u => 
+        u.email === emailBoss &&
+        u.password === passwordBoss &&
+        u.type === 'boss'
+    );
+
+    if(user) {
+        localStorage.setItem('userLogged', JSON.stringify(user));
+        window.location.href = '../index.html'
+    } else {
+        alert('Usuário ou senha incorretos');
     }
-);
+});
 
 </script>
 </html>

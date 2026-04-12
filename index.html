@@ -196,50 +196,123 @@
 
     setInterval(clockUpdate, 1000);
 
+/*================================================================*/
+/* Lista de Colaboradores */
+
+const employees = [
+    {
+        name: "Carlos Eduardo Martins",
+        registry: "1001",
+        departament: "10000"
+    },
+    {
+        name: "Fernanda Oliveira Souza",
+        registry: "1002",
+        departament: "10000"
+    },
+    {
+        name: "Ricardo Almeida Santos",
+        registry: "1003",
+        departament: "20000"
+    },
+    {
+        name: "Juliana Pereira Costa",
+        registry: "1004",
+        departament: "20000"
+    },
+    {
+        name: "Marcos Vinicius Rocha",
+        registry: "1005",
+        departament: "30000"
+    },
+    {
+        name: "Patricia Gomes Ferreira",
+        registry: "1006",
+        departament: "30000"
+    },
+    {
+        name: "Lucas Henrique Barbosa",
+        registry: "1007",
+        departament: "40000"
+    },
+    {
+        name: "Amanda Ribeiro Nunes",
+        registry: "1008",
+        departament: "40000"
+    },
+    {
+        name: "Bruno Carvalho Mendes",
+        registry: "1009",
+        departament: "10000"
+    },
+    {
+        name: "Camila Duarte Lopes",
+        registry: "1010",
+        departament: "20000"
+    },
+    {
+        name: "Felipe Rodrigues Batista",
+        registry: "1011",
+        departament: "30000"
+    },
+    {
+        name: "Renata Cristina Alves",
+        registry: "1012",
+        departament: "40000"
+    },
+    {
+        name: "Roberto Silva",
+        registry: "2001",
+        departament: "20000"
+    }
+];
+
+
+
 
 
 /*================================================================*/
     /* Lista de Departament com os Centros de Custo de cada setor */
 const departaments = [
     {
-        code: "9874",
+        code: "10000",
         name: "Gestão de Pessoas",
         costCenters: [
-            { code: "9874-01", name: "Recrutamento e Seleção" },
-            { code: "9874-02", name: "Treinamento e Desenvolvimento" },
-            { code: "9874-03", name: "Administração de Pessoal" },
-            { code: "9874-04", name: "Benefícios" }
+            { code: "10000-01", name: "Recrutamento e Seleção" },
+            { code: "10000-02", name: "Treinamento e Desenvolvimento" },
+            { code: "10000-03", name: "Administração de Pessoal" },
+            { code: "10000-04", name: "Benefícios" }
         ]
     },
     {
-        code: "9887",
+        code: "20000",
         name: "Departamento Financeiro",
         costCenters: [
-            { code: "9887-01", name: "Contas a Pagar" },
-            { code: "9887-02", name: "Contas a Receber" },
-            { code: "9887-03", name: "Tesouraria" },
-            { code: "9887-04", name: "Controladoria" },
-            { code: "9887-05", name: "Faturamento" }
+            { code: "20000-01", name: "Contas a Pagar" },
+            { code: "20000-02", name: "Contas a Receber" },
+            { code: "20000-03", name: "Tesouraria" },
+            { code: "20000-04", name: "Controladoria" },
+            { code: "20000-05", name: "Faturamento" }
         ]
     },
     {
-        code: "9134",
+        code: "30000",
         name: "Departamento Serviços Gerais",
         costCenters: [
-            { code: "9134-01", name: "Limpeza e Conservação" },
-            { code: "9134-02", name: "Manutenção Predial" },
-            { code: "9134-03", name: "Recepção" },
-            { code: "9134-04", name: "Portaria" }
+            { code: "30000-01", name: "Limpeza e Conservação" },
+            { code: "30000-02", name: "Manutenção Predial" },
+            { code: "30000-03", name: "Recepção" },
+            { code: "30000-04", name: "Portaria" }
         ]
     },
     {
-        code: "9888",
+        code: "40000",
         name: "Segurança do Trabalho",
         costCenters: [
-            { code: "9888-01", name: "Prevenção de Acidentes" },
-            { code: "9888-02", name: "Treinamentos de Segurança" },
-            { code: "9888-03", name: "Equipamentos de Proteção Individual" },
-            { code: "9888-04", name: "Inspeções de Segurança" }
+            { code: "40000-01", name: "Prevenção de Acidentes" },
+            { code: "40000-02", name: "Treinamentos de Segurança" },
+            { code: "40000-03", name: "Equipamentos de Proteção Individual" },
+            { code: "40000-04", name: "Inspeções de Segurança" }
         ]
     }
 ];
