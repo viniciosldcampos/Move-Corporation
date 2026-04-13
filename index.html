@@ -121,12 +121,12 @@
                 
                 <!-- Campo de data e hora da Chegada (Destino) -->
                 <div class="dateHour">
-                    <div class="container-box">
+                    <div>
                         <label>Data</label>
                         <input type="date">
                     </div>
 
-                    <div class="container-box-4">
+                    <div>
                         <label>Fim</label>
                         <input type="time">
                     </div>
@@ -149,12 +149,41 @@
             </div>
         </section>
         <!-- SEÇÃO: INFORMAÇÕES do MOTORISTA  -->
-        <section class="section">
+        <section class="sectionDriver">
             <div class="driverInformation">
-                <button>Motorista interno</button>
-                <button>Motorista externo</button>
+                <div class="box-1">
+                    <label for="interno">Motorista interno
+                    <input type="radio" id="interno" name="driverType" value="interno" onclick="abrirModalInternalDriver()" required>
+                    </label>
+                </div>
+            </div>
+            <div class="driverInformation">
+                <div class="box-2">
+                    <label for="externo">Cadastrar Motorista
+                    <input type="radio" id="externo" name="driverType" value="externo" onclick="abrirModalExternalDriver()">
+                    </label>
+                </div>
             </div>
         </section>
+        <!-- MODAL - MOTORISTA INTERNO -->
+        <div id="modalInternalDriver" class="modal">
+            <div class="modal-content">
+                <h2>Motoristas Cadastrados</h2>
+            </div>
+        </div>
+        <!-- MODAL - MOTORISTA EXTERNO -->
+        <div id="modalExternalDriver" class="modal">
+            <div class="modal-content">
+                <h2>Cadastro de Motorista Externo</h2>
+                    <input type="text" name="" id="" placeholder="Nome do motorista">
+                    <input type="text" name="" id="" placeholder="Numero do R.G">
+                    <input type="text" name="" id="" placeholder="Numero do CPF">
+                    <input type="text" name="" id="" placeholder="Numero da CNH">
+                    <input type="file" name="" id="" multiple>
+                <button type="button">Salvar</button>
+                <button type="button" onclick="fecharModalExternalDriver()">Fechar</button>
+            </div>
+        </div>
         
         <!-- SEÇÃO: NECESSIDADE DE AJUDANTES E ANEXOS  -->
         <section class="section moreInformationSection">
@@ -354,8 +383,6 @@ const selectCostCenter = document.getElementById('costCenter');
     }
 
 
-
-
     /*====================================*/
     /* Adicionar botão de Passageiros*/
     function addInputPassengers() {
@@ -385,23 +412,42 @@ const selectCostCenter = document.getElementById('costCenter');
     function addRouteStop() {
         let routeStop = document.querySelector('.localOrigin');
         let divLocalOrigin = document.createElement('div');
-
+        
         divLocalOrigin.classList.add('localOrigin');
         divLocalOrigin.innerHTML = `
-            <div class="input-group">
-                <input type="text" name="" id="">
-                <button type="button" onclick="removeInputRouteStop(this)">
-                    <i class="fa-solid fa-minus"></i>
+        <div class="input-group">
+            <input type="text" name="" id="">
+            <button type="button" onclick="removeInputRouteStop(this)">
+                <i class="fa-solid fa-minus"></i>
                 </button>
-            </div>
-        `
-        routeStop.appendChild(divLocalOrigin);
+                </div>
+                `
+                routeStop.appendChild(divLocalOrigin);
+            }
+            
+            /* Remover botão de Paradas do Transporte*/
+            function removeInputRouteStop(button) {
+                button.closest('.localOrigin').remove();
+            }
+
+
+/*====================================*/
+    /* Modal para Adicionar informações do motorista interno */
+    function abrirModalInternalDriver() {
+        document.getElementById('modalInternalDriver').style.display = 'flex';
+    }
+    function fecharModalInternalDriver() {
+        document.getElementById('modalInternalDriver').style.display = 'none';
     }
 
-    /* Remover botão de Paradas do Transporte*/
-    function removeInputRouteStop(button) {
-        button.closest('.localOrigin').remove();
+    /* Modal para Adicionar informações do motorista externo */
+    function abrirModalExternalDriver() {
+        document.getElementById('modalExternalDriver').style.display = 'flex';
     }
+    function fecharModalExternalDriver() {
+        document.getElementById('modalExternalDriver').style.display = 'none';
+    }
+
 
 </script>
 

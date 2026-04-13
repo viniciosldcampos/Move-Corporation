@@ -36,7 +36,7 @@ form h1 {
 form div {
     display: flex;
     flex-direction: column;
-    margin-bottom: 5px;
+    margin: 5px;
 }
 
 form label {
@@ -59,17 +59,20 @@ form textarea:focus {
     border-color: #2a5298;
 }
 
+/* Numero da Solicitação */
 .numberSolicitation {
     display: flex;
     margin-left: auto;
     width: 200px;
 }
 
+/* Data e hora da Solicitação */
 .dateHourSolicitation {
     margin-left: auto;
     width: 200px;
 }
 
+/* Informações do Solicitante */
 .mainInformation {
     display: grid;
     grid-template-columns: 2.5fr 1fr;
@@ -82,12 +85,14 @@ form textarea:focus {
     gap: 20px;
 }
 
+/* Informações da empresa */
 .informationEnterprise {
     display: grid;
     grid-template-columns: 0.75fr 1fr;
     gap: 20px;
 }
 
+/* Motivo do Transporte */
 .input-Resquest {
     height: 130px;
     padding: 5px;
@@ -102,7 +107,14 @@ form textarea:focus {
     border-radius: 8px; 
 }
 
-/* Linha dupla (Data e Hora) */
+/* Passageiros e Paradas */
+.passengers {
+    display: block;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Seção de (Data e Hora) do transporte */
 .dateContainer {
     display: flex;
     flex-direction: row;
@@ -129,8 +141,8 @@ form textarea:focus {
     width: 150px;
 }
 
-/* Passageiros e Paradas */
-.passengers {
+/* Seção de Localização do transporte */
+.localOrigin {
     display: block;
     gap: 10px;
     align-items: center;
@@ -139,12 +151,6 @@ form textarea:focus {
 .input-group {
     display: flex;
     flex-direction: row;
-}
-
-.localOrigin {
-    display: block;
-    gap: 10px;
-    align-items: center;
 }
 
 .passengers input,
@@ -175,30 +181,93 @@ form textarea:focus {
     transform: translateY(-2px);
 }
 
-.driverInformation {
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 10px;
+/* Seção de motorista do transporte */
+.sectionDriver {
+    display: flex;
+    align-items: center;
     border: #ccc 1px solid;
     border-radius: 8px;
+    gap: 300px;
+}
+.driverInformation {
+    flex: 1;
 }
 
-.driverInformation button {
-    margin: 20px;
-    padding: 20px 20px;
+.driverInformation .box-1, .box-2 {
+    display: flex;
+    margin: 0 20px;
+}
+
+.driverInformation label {
+    display: flex;
+    max-width: 205px;
+    flex-direction: row;
+    margin: 10px 0;
+    padding: 20px 0 20px 20px;
     border: none;
     background: #2a5298;
     color: white;
     border-radius: 8px;
     cursor: pointer;
     transition: 0.3s;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
 }
 
-.driverInformation button:hover {
+.driverInformation input[type="radio"] {
+    max-width: 20px;
+    opacity: 0;
+    margin: auto 0;
+    height: 15px;
+    border: none;
+    background: #2a5298;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+    
+}
+
+.driverInformation input[type="radio"]:hover, 
+.driverInformation label:hover {
     background: #1e3c72;
     transform: translateY(-2px);
 }
-    
+
+.driverInformation label:has(input[type="radio"]:checked) {
+    background: #28a745;
+}
+
+/*Modal para teste */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-content input {
+    padding: 8px;
+}
+
+
+/* Seção de Extras - Ajudantes e Anexos */
 .moreInformationSection {
     display: flex;
     gap: 20px;
@@ -217,10 +286,9 @@ form textarea:focus {
 }
 
 /* Botões finais */
-
 .bottonsForm {
     display: flex;
-    gap: 40px;
+    gap: 50px;
     justify-content: center;
 }
 
