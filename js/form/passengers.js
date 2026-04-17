@@ -7,7 +7,7 @@ function addInputPassengers() {
     divPassengersInputs.classList.add('passenger');
     divPassengersInputs.innerHTML = ` 
     <div class="input-group">
-    <input type="text" name="" id="">
+    <input type="text" name="" id="" placeholder="Digite o nome do passageiro">
     <button type="button" onclick="removeInputPassengers(this)">
     <i class="fa-solid fa-minus"></i>
     </button>
