@@ -1,5 +1,5 @@
 /* Input da Data e hora local atualizada */
-function clockUpdate() {
+export function clockUpdate() {
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
