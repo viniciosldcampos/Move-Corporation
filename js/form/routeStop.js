@@ -7,8 +7,8 @@ function addRouteStop() {
     divLocalOrigin.classList.add('localOrigin');
     divLocalOrigin.innerHTML = `
         <div class="input-group">
-            <input type="text" name="" id="">
-            <button type="button" onclick="removeInputRouteStop(this)">
+            <input type="text" name="" id="" placeholder="Local de parada">
+            <button class="remove-button" type="button" onclick="removeInputRouteStop(this)">
             <i class="fa-solid fa-minus"></i>
             </button>
         </div>
@@ -20,3 +20,7 @@ function addRouteStop() {
     function removeInputRouteStop(button) {
         button.closest('.localOrigin').remove();
     }
+
+    /* Tornar funções globais */
+    window.addRouteStop = addRouteStop;
+    window.removeInputRouteStop = removeInputRouteStop;
