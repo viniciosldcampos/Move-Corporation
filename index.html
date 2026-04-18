@@ -14,7 +14,7 @@
         <h1>Move-Corporation</h1>
         <!-- SEÇÃO: Informações do Solicitante -->
         <div class="numberSolicitation">
-            <input type="number" id="numberSolicitation" name="numberSolicitation" placeholder="Numero da Solicitação" disabled>
+            <input type="number" id="numberSolicitation" name="numberSolicitation" placeholder="Numero da Solicitação">
         </div>
         <div class="dateHourSolicitation">
             <input type="datetime-local" id="datetime-LocalSolicitation" name="numberSolicitation" disabled>
@@ -99,7 +99,7 @@
                 <label for="">Passageiro</label>
                 <div class="input-group">
                     <input type="text" name="" id="" placeholder="Digite o nome do passageiro">
-                    <button type="button" onclick="addInputPassengers()"><i class="fa-solid fa-plus"></i></button>
+                    <button class="add-Button" type="button" onclick="addInputPassengers()" title="Clique para adicionar outros passageiros no transporte"><i class="fa-solid fa-plus"></i></button>
                 </div>
             </div>
             
@@ -137,30 +137,31 @@
             <div class="localOrigin">
                 <label>Local de Origem</label>
                 <div class="input-group">
-                    <input type="text" name="" id="">
-                    <button type="button" onclick="addRouteStop()" class="add-Button"><i class="fa-solid fa-plus"></i></button>
+                    <input type="text" name="" id="" placeholder="Endereço do local de origem">
+                    <button title="Clique para adicionar paradas no trajeto" type="button" onclick="addRouteStop()" class="add-Button"><i class="fa-solid fa-plus"></i></button>
                 </div>
             </div>
             
             <!-- Campo de Local de Chegada (Destino) -->
             <div class="localDestination">
                 <label>Local de Destino</label>
-                <input type="text" name="" id="">
+                <input type="text" name="" id="" placeholder="R. Fabiano Alves, 363 - Vila Prudente, São Paulo - SP, 03139-010">
             </div>
         </section>
         <!-- SEÇÃO: INFORMAÇÕES do MOTORISTA  -->
+<!-- SEÇÃO: INFORMAÇÕES do MOTORISTA  -->
         <section class="sectionDriver">
             <div class="driverInformation">
                 <div class="box-1">
                     <label for="interno">Motorista interno
-                    <input type="radio" id="interno" name="driverType" value="interno" onclick="abrirModalInternalDriver()" required>
+                    <input type="radio" id="interno" name="driverType" value="interno" onclick="openModalInternalDriver()" required>
                     </label>
                 </div>
             </div>
             <div class="driverInformation">
                 <div class="box-2">
                     <label for="externo">Cadastrar Motorista
-                    <input type="radio" id="externo" name="driverType" value="externo" onclick="abrirModalExternalDriver()">
+                    <input type="radio" id="externo" name="driverType" value="externo" onclick="openModalExternalDriver()">
                     </label>
                 </div>
             </div>
@@ -168,20 +169,41 @@
         <!-- MODAL - MOTORISTA INTERNO -->
         <div id="modalInternalDriver" class="modal">
             <div class="modal-content">
-                <h2>Motoristas Cadastrados</h2>
+                <div class="modal-header">
+                    <h2>Motoristas Cadastrados</h2>
+                    <button class="close-btn" type="button" onclick="closeModalInternalDriver()">❌</button>
+                </div>
+                <div class="modal-body">
+                    <select name="" id="selectDrivers">
+                        <!-- <option value="">Selecione um motorista</option> -->
+                    </select>
+                    <input type="text" name="" id="selectedDriver" placeholder="Motorista selecionado" disabled>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-save" type="button">Salvar</button>
+                </div>
             </div>
         </div>
         <!-- MODAL - MOTORISTA EXTERNO -->
         <div id="modalExternalDriver" class="modal">
             <div class="modal-content">
-                <h2>Cadastro de Motorista Externo</h2>
+                <div class="modal-header">
+                    <h2>Cadastro</h2>
+                    <button class="close-btn" type="button" onclick="closeModalExternalDriver()">❌</button>
+                </div>
+                <div class="modal-body">
                     <input type="text" name="" id="" placeholder="Nome do motorista">
                     <input type="text" name="" id="" placeholder="Numero do R.G">
                     <input type="text" name="" id="" placeholder="Numero do CPF">
                     <input type="text" name="" id="" placeholder="Numero da CNH">
-                    <input type="file" name="" id="" multiple>
-                <button type="button">Salvar</button>
-                <button type="button" onclick="fecharModalExternalDriver()">Fechar</button>
+                </div>
+                    <label class="file-upload">
+                        <span>📎 Anexar documentos</span>
+                        <input type="file" name="" id="" multiple>
+                    </label>
+                <div class="modal-footer">
+                    <button class="btn-save" type="button">Salvar</button>
+                </div>
             </div>
         </div>
         
@@ -205,13 +227,6 @@
         </section>
     </form>
     <script type="module" src="js/form/form.js"></script>
-    <script src="js/form/employees.js"></script>
-    <script src="js/form/departaments.js"></script>
-    <script src="js/form/passengers.js"></script>
-    <script src="js/form/date.js"></script>
-    <script src="js/form/modal.js"></script>
-    <script src="js/form/routeStop.js"></script>
-    <script src="js/utils/clock.js"></script>
 </body>
 
 </html>
