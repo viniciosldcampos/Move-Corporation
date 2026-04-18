@@ -29,7 +29,7 @@ selectDepartament.addEventListener('change', function() {
 });
 
 
-/* Preencher dados usuário logado */
+/* Preencher dados do usuário logado - login.js */
 const userLogged = JSON.parse(localStorage.getItem('userLogged'));
 
     if(userLogged) {
@@ -39,6 +39,15 @@ const userLogged = JSON.parse(localStorage.getItem('userLogged'));
     document.querySelector('.numberRegistry input').value = userLogged.registry;
     /* Departamento*/
     selectDepartament.value = userLogged.departament;
-    /* Disparar change */
+    /* Seu departamento está sendo preenchido, mas isso não dispara o evento change automaticamente. */
     selectDepartament.dispatchEvent(new Event('change'));
     }
+
+
+import { employees } from './employees.js'
+import './drivers.js'
+import './date.js'
+import './modal.js'
+import '../utils/clock.js'
+import './passengers.js'
+import './routeStop.js'
