@@ -4,5 +4,5 @@ export const date = document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".date-input").forEach(input => {
         input.min = hoje;
-    });
+     });
 });
