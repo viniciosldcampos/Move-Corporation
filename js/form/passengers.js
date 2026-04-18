@@ -8,7 +8,7 @@ function addInputPassengers() {
     divPassengersInputs.innerHTML = ` 
     <div class="input-group">
     <input type="text" name="" id="" placeholder="Digite o nome do passageiro">
-    <button type="button" onclick="removeInputPassengers(this)">
+    <button type="button" class="remove-button" onclick="removeInputPassengers(this)">
     <i class="fa-solid fa-minus"></i>
     </button>
     </div>
@@ -21,3 +21,7 @@ function addInputPassengers() {
 function removeInputPassengers(button) {
     button.closest('.passenger').remove();
 }
+
+/* Tornar funções globais */
+window.addInputPassengers = addInputPassengers;
+window.removeInputPassengers = removeInputPassengers;
