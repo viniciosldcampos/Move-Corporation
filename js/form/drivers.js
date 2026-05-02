@@ -5,5 +5,5 @@ export const drivers = [
     {name:"Pedro Santos"},
     {name:"Lucas Ferreira"},
     {name: "Marcos Souza"},
-    {name: "Luciana Alves"}
+    {name: "Luciana Alves"},
 ];
