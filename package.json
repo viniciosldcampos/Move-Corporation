@@ -1,23 +1,24 @@
 {
-  "name": "move-corporation",
+  "name": "Move-Corporation",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/viniciosldcampos/Move-Corporation.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/viniciosldcampos/Move-Corporation/issues"
+  "packageManager": "pnpm@10.33.2",
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "javascript": "^1.0.0",
+    "jsx": "^0.9.89"
   },
-  "homepage": "https://github.com/viniciosldcampos/Move-Corporation#readme",
-  "description": "",
   "dependencies": {
-    "express": "^5.2.1"
+    "@prisma/client": "^6.19.3",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "prisma": "^6.19.3"
   }
 }
