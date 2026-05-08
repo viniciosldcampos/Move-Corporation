@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { criarSolicitacao } from '../controllers/solicitacoesController.js'
+import { criarSolicitacao } from '../controllers/SolicitacoesController.js'
 
 const router = Router()
 
