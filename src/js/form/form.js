@@ -1,4 +1,5 @@
 import { departaments } from './departaments.js'
+import './submit.js'
 
 const selectDepartament = document.getElementById('departament');
 const selectCostCenter = document.getElementById('costCenter');
