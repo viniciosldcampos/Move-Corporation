@@ -27,8 +27,11 @@ app.use((req, res, next) => {
 // Rotas
 import solicitacoesRoutes from './routes/solicitacoes.js'
 import departamentosRoutes from './routes/departamentos.js'
+import authRoutes from './routes/auth.js'
 app.use('/api/solicitacoes', solicitacoesRoutes)
 app.use('/api/departamentos', departamentosRoutes)
+app.use('/api/auth', authRoutes)
+
 
 app.listen(3000, () => {
   console.log('Servidor rodando em http://localhost:3000')
