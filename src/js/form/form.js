@@ -1,8 +1,9 @@
-import { departaments } from './departaments.js'
 import './submit.js'
 
-const selectDepartament = document.getElementById('departament');
-const selectCostCenter = document.getElementById('costCenter');
+const selectDepartament = document.getElementById('departament')
+const selectCostCenter = document.getElementById('costCenter')
+
+let departaments = []
 
 /* Preencher o campo do select Departamentos */
     departaments.forEach(departament => {
@@ -45,8 +46,6 @@ const userLogged = JSON.parse(localStorage.getItem('userLogged'));
     }
 
 
-import { employees } from './employees.js'
-import './drivers.js'
 import './date.js'
 import './modal.js'
 import '../utils/clock.js'

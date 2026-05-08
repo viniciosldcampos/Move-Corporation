@@ -15,7 +15,7 @@ let passwordUser = document.getElementById('passwordUser').value;
 
     if(user) {
     localStorage.setItem("userLogged", JSON.stringify(user));
-    window.location.href= '../index.html';
+    window.location.href= '../form.html';
     } else {
     alert('Usuário ou senha incorretos');
     }
@@ -39,7 +39,7 @@ document.getElementById('loginFormBoss').addEventListener('submit', function(eve
 
     if(user) {
         localStorage.setItem('userLogged', JSON.stringify(user));
-        window.location.href = '../index.html'
+        window.location.href = '../form.html'
     } else {
         alert('Usuário ou senha incorretos');
     }

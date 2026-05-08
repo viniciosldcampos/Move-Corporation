@@ -1,9 +1,4 @@
 /*====================================*/
-/* Importar lista de motoristas */
-import { drivers } from "./drivers.js";
-
-
-/*====================================*/
 /* Modal para Adicionar informações do motorista interno */
 
 export function openModalInternalDriver() {
