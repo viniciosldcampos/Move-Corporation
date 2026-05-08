@@ -2,6 +2,9 @@ import express from 'express'
 import dotenv from 'dotenv'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import solicitacoesRoutes from './routes/solicitacoes.js'
+import departamentosRoutes from './routes/departamentos.js'
+import authRoutes from './routes/auth.js'
 
 dotenv.config()
 
@@ -10,9 +13,6 @@ const app = express()
 // Descobre o caminho do arquivo atual
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-
-// Serve os arquivos estáticos do frontend
-app.use(express.static(join(__dirname, './')))
 
 app.use(express.json())
 
@@ -23,11 +23,10 @@ app.use((req, res, next) => {
   next()
 })
 
+app.use(express.static(join(__dirname, './')))
+app.use(express.static(join(__dirname, '../')))
 
 // Rotas
-import solicitacoesRoutes from './routes/solicitacoes.js'
-import departamentosRoutes from './routes/departamentos.js'
-import authRoutes from './routes/auth.js'
 app.use('/api/solicitacoes', solicitacoesRoutes)
 app.use('/api/departamentos', departamentosRoutes)
 app.use('/api/auth', authRoutes)
