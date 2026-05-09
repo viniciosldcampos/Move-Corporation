@@ -2,7 +2,6 @@ import prisma from '../database/prisma.js'
 
 export async function criarSolicitacao(req, res) {
   const {
-    numero_solicitacao,
     solicitante_id,
     motivo,
     veiculo_id,
@@ -14,15 +13,18 @@ export async function criarSolicitacao(req, res) {
     hora_chegada,
     local_origem,
     local_destino,
-    passageiros,  // array de strings ex: ["João Silva", "Maria"]
-    paradas       // array de strings ex: ["Rua A, 123", "Rua B, 456"]
+    passageiros,
+    paradas
   } = req.body
 
   try {
+    const numero_solicitacao = Date.now()
+
+    // 1. Cria a solicitação principal
     const solicitacao = await prisma.solicitacoes_transporte.create({
       data: {
-        numero_solicitacao: parseInt(numero_solicitacao),
-        solicitante_id: parseInt(solicitante_id),
+        numero_solicitacao,
+        solicitante_id: solicitante_id ? parseInt(solicitante_id) : 1,
         motivo,
         veiculo_id: veiculo_id ? parseInt(veiculo_id) : null,
         motorista_id: motorista_id ? parseInt(motorista_id) : null,
@@ -33,14 +35,31 @@ export async function criarSolicitacao(req, res) {
         hora_chegada: hora_chegada || null,
         local_origem,
         local_destino,
-        passageiros_solicitacao: {
-          create: passageiros?.map(nome => ({ nome_passageiro: nome })) ?? []
-        },
-        paradas_trajeto: {
-          create: paradas?.map((endereco, i) => ({ endereco, ordem: i + 1 })) ?? []
-        }
       }
     })
+
+    const solicitacaoId = Number(solicitacao.id)
+
+    // 2. Cria os passageiros separadamente
+    if (passageiros?.length > 0) {
+      await prisma.passageiros_solicitacao.createMany({
+        data: passageiros.map(nome => ({
+          solicitacao_id: solicitacaoId,
+          nome_passageiro: nome
+        }))
+      })
+    }
+
+    // 3. Cria as paradas separadamente
+    if (paradas?.length > 0) {
+      await prisma.paradas_trajeto.createMany({
+        data: paradas.map((endereco, i) => ({
+          solicitacao_id: solicitacaoId,
+          endereco,
+          ordem: i + 1
+        }))
+      })
+    }
 
     res.status(201).json({ sucesso: true, id: solicitacao.id.toString() })
   } catch (error) {
