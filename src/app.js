@@ -6,6 +6,7 @@ import solicitacoesRoutes from './routes/solicitacoes.js'
 import departamentosRoutes from './routes/departamentos.js'
 import authRoutes from './routes/auth.js'
 import gestorRoutes from './routes/gestor.js'
+import cadastroRoutes from './routes/cadastro.js'
 
 dotenv.config()
 
@@ -32,6 +33,7 @@ app.use('/api/solicitacoes', solicitacoesRoutes)
 app.use('/api/departamentos', departamentosRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/gestor', gestorRoutes)
+app.use('/api/cadastro', cadastroRoutes)
 
 
 app.listen(3000, () => {
