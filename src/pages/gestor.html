@@ -5,17 +5,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Move-Corporation | Gestor</title>
+    <link rel="stylesheet" href="/src/css/gestor.css">
 </head>
 
 <body>
-    <h1>Painel do Gestor — <span id="nomeGestor"></span></h1>
-    <a href="/form.html">Solicitar Transporte</a>
+
+    <header>
+        <h1>Move-Corporation</h1>
+        <div>
+            <span>Olá, <strong id="nomeGestor"></strong></span>
+            <a href="/index.html">Nova Solicitação</a>
+            <button onclick="sair()">Sair</button>
+        </div>
+    </header>
+
+    <main>
+        <h2>Solicitações Pendentes</h2>
+        <div id="conteudo"></div>
+    </main>
+
     <script>
         const nome = localStorage.getItem('nome')
         const perfil = localStorage.getItem('perfil')
+        const token = localStorage.getItem('token')
+
         if (!nome || perfil !== 'gestor') window.location.href = '/login.html'
+
         document.getElementById('nomeGestor').textContent = nome
+
+        async function carregarPendentes() {
+            try {
+                const res = await fetch('http://localhost:3000/api/gestor/pendentes', {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                const data = await res.json()
+
+                const conteudo = document.getElementById('conteudo')
+
+                if (!data.dados || data.dados.length === 0) {
+                    conteudo.innerHTML = '<div class="vazio">Nenhuma solicitação pendente.</div>'
+                    return
+                }
+
+                const linhas = data.dados.map(s => `
+        <tr>
+          <td>#${s.numero_solicitacao}</td>
+          <td>${s.solicitante}</td>
+          <td>${s.motivo ?? '-'}</td>
+          <td>${s.local_origem ?? '-'}</td>
+          <td>${s.local_destino ?? '-'}</td>
+          <td>${s.data_partida ? new Date(s.data_partida).toLocaleDateString('pt-BR') : '-'}</td>
+          <td><span class="badge pendente">${s.status}</span></td>
+          <td>
+            <div class="acoes">
+              <button class="btn-aprovar" onclick="aprovar('${s.id}')">Aprovar</button>
+              <button class="btn-recusar" onclick="recusar('${s.id}')">Recusar</button>
+            </div>
+          </td>
+        </tr>
+      `).join('')
+
+                conteudo.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Numero</th>
+              <th>Solicitante</th>
+              <th>Motivo</th>
+              <th>Origem</th>
+              <th>Destino</th>
+              <th>Data</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>${linhas}</tbody>
+        </table>
+      `
+            } catch (error) {
+                console.error(error)
+            }
+        }
+
+        async function aprovar(id) {
+            await atualizarStatus(id, 'aprovado')
+        }
+
+        async function recusar(id) {
+            await atualizarStatus(id, 'cancelado')
+        }
+
+        async function atualizarStatus(id, status) {
+            try {
+                const res = await fetch(`http://localhost:3000/api/gestor/solicitacao/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ status })
+                })
+
+                const data = await res.json()
+                if (data.sucesso) {
+                    alert(`Solicitação ${status} com sucesso!`)
+                    carregarPendentes()
+                }
+            } catch (error) {
+                console.error(error)
+            }
+        }
+
+        function sair() {
+            localStorage.clear()
+            window.location.href = '/login.html'
+        }
+
+        carregarPendentes()
     </script>
+
 </body>
 
 </html>
