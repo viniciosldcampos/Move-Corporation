@@ -5,6 +5,7 @@ import { dirname, join } from 'path'
 import solicitacoesRoutes from './routes/solicitacoes.js'
 import departamentosRoutes from './routes/departamentos.js'
 import authRoutes from './routes/auth.js'
+import gestorRoutes from './routes/gestor.js'
 
 dotenv.config()
 
@@ -30,6 +31,7 @@ app.use(express.static(join(__dirname, '../')))
 app.use('/api/solicitacoes', solicitacoesRoutes)
 app.use('/api/departamentos', departamentosRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/gestor', gestorRoutes)
 
 
 app.listen(3000, () => {
