@@ -22,19 +22,19 @@
     <nav>
         <button class="ativo" onclick="trocarAba('pendentes', this)">Pendentes</button>
         <button onclick="trocarAba('historico', this)">Histórico</button>
+        <button onclick="trocarAba('calendario', this)">Calendário</button>
     </nav>
 
     <main>
-        <!-- ABA PENDENTES -->
+        <!-- PENDENTES -->
         <div id="secao-pendentes" class="secao ativa">
             <h2>Solicitações Pendentes</h2>
             <div id="conteudo-pendentes"></div>
         </div>
 
-        <!-- ABA HISTÓRICO -->
+        <!-- HISTÓRICO -->
         <div id="secao-historico" class="secao">
             <h2>Histórico de Solicitações</h2>
-
             <div class="filtros">
                 <label>Status
                     <select id="filtro-status">
@@ -46,18 +46,48 @@
                         <option value="concluido">Concluído</option>
                     </select>
                 </label>
-                <label>Data início
-                    <input type="date" id="filtro-data-inicio">
-                </label>
-                <label>Data fim
-                    <input type="date" id="filtro-data-fim">
-                </label>
+                <label>Data início <input type="date" id="filtro-data-inicio"></label>
+                <label>Data fim <input type="date" id="filtro-data-fim"></label>
                 <button onclick="carregarHistorico()">Filtrar</button>
             </div>
-
             <div id="conteudo-historico"></div>
         </div>
+
+        <!-- CALENDÁRIO -->
+        <div id="secao-calendario" class="secao">
+            <div class="cal-header">
+                <div class="cal-nav">
+                    <button onclick="mudarMes(-1)">&#8249;</button>
+                    <span id="cal-titulo"></span>
+                    <button onclick="mudarMes(1)">&#8250;</button>
+                    <button class="btn-hoje" onclick="irParaHoje()">Hoje</button>
+                </div>
+            </div>
+            <div class="cal-grid">
+                <div class="cal-dias-semana">
+                    <div>Dom</div>
+                    <div>Seg</div>
+                    <div>Ter</div>
+                    <div>Qua</div>
+                    <div>Qui</div>
+                    <div>Sex</div>
+                    <div>Sáb</div>
+                </div>
+                <div class="cal-dias" id="cal-dias"></div>
+            </div>
+        </div>
     </main>
+
+    <!-- MODAL EVENTO -->
+    <div class="modal-evento" id="modalEvento" onclick="fecharModal(event)">
+        <div class="modal-evento-content">
+            <div class="modal-evento-header">
+                <h3 id="modal-titulo">Solicitação</h3>
+                <button onclick="fecharModalBtn()">✕</button>
+            </div>
+            <div class="modal-evento-body" id="modal-body"></div>
+        </div>
+    </div>
 
     <script>
         const nome = localStorage.getItem('nome')
@@ -67,20 +97,21 @@
         if (!nome || perfil !== 'gestor') window.location.href = '/login.html'
         document.getElementById('nomeGestor').textContent = nome
 
+        // ── ABAS ──
         function trocarAba(aba, btn) {
             document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'))
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('ativo'))
             document.getElementById('secao-' + aba).classList.add('ativa')
             btn.classList.add('ativo')
-
             if (aba === 'pendentes') carregarPendentes()
             if (aba === 'historico') carregarHistorico()
+            if (aba === 'calendario') renderCalendario()
         }
 
+        // ── TABELA ──
         function renderTabela(dados, mostrarAcoes = false) {
-            if (!dados || dados.length === 0) {
+            if (!dados || dados.length === 0)
                 return '<div class="vazio">Nenhuma solicitação encontrada.</div>'
-            }
 
             const linhas = dados.map(s => `
       <tr>
@@ -91,95 +122,161 @@
         <td>${s.local_destino ?? '-'}</td>
         <td>${s.data_partida ? new Date(s.data_partida).toLocaleDateString('pt-BR') : '-'}</td>
         <td><span class="badge ${s.status}">${s.status}</span></td>
-        ${mostrarAcoes ? `
-        <td>
+        <td>${mostrarAcoes ? `
           <div class="acoes">
             <button class="btn-aprovar" onclick="aprovar('${s.id}')">Aprovar</button>
             <button class="btn-recusar" onclick="recusar('${s.id}')">Recusar</button>
-          </div>
-        </td>` : '<td>-</td>'}
-      </tr>
-    `).join('')
+          </div>` : '-'}
+        </td>
+      </tr>`).join('')
 
-            return `
-      <table>
-        <thead>
-          <tr>
-            <th>Numero</th>
-            <th>Solicitante</th>
-            <th>Motivo</th>
-            <th>Origem</th>
-            <th>Destino</th>
-            <th>Data</th>
-            <th>Status</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>${linhas}</tbody>
-      </table>
-    `
+            return `<table>
+      <thead><tr>
+        <th>#</th><th>Solicitante</th><th>Motivo</th>
+        <th>Origem</th><th>Destino</th><th>Data</th><th>Status</th><th>Ações</th>
+      </tr></thead>
+      <tbody>${linhas}</tbody>
+    </table>`
         }
 
         async function carregarPendentes() {
-            try {
-                const res = await fetch('http://localhost:3000/api/gestor/pendentes', {
-                    headers: { Authorization: `Bearer ${token}` }
-                })
-                const data = await res.json()
-                document.getElementById('conteudo-pendentes').innerHTML = renderTabela(data.dados, true)
-            } catch (error) {
-                console.error(error)
-            }
+            const res = await fetch('http://localhost:3000/api/gestor/pendentes', {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            const data = await res.json()
+            document.getElementById('conteudo-pendentes').innerHTML = renderTabela(data.dados, true)
         }
 
         async function carregarHistorico() {
-            try {
-                const status = document.getElementById('filtro-status').value
-                const dataInicio = document.getElementById('filtro-data-inicio').value
-                const dataFim = document.getElementById('filtro-data-fim').value
-
-                const params = new URLSearchParams()
-                if (status) params.append('status', status)
-                if (dataInicio) params.append('data_inicio', dataInicio)
-                if (dataFim) params.append('data_fim', dataFim)
-
-                const res = await fetch(`http://localhost:3000/api/gestor/historico?${params}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                })
-                const data = await res.json()
-                document.getElementById('conteudo-historico').innerHTML = renderTabela(data.dados, false)
-            } catch (error) {
-                console.error(error)
-            }
+            const status = document.getElementById('filtro-status').value
+            const dataInicio = document.getElementById('filtro-data-inicio').value
+            const dataFim = document.getElementById('filtro-data-fim').value
+            const params = new URLSearchParams()
+            if (status) params.append('status', status)
+            if (dataInicio) params.append('data_inicio', dataInicio)
+            if (dataFim) params.append('data_fim', dataFim)
+            const res = await fetch(`http://localhost:3000/api/gestor/historico?${params}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            const data = await res.json()
+            document.getElementById('conteudo-historico').innerHTML = renderTabela(data.dados, false)
         }
 
         async function aprovar(id) { await atualizarStatus(id, 'aprovado') }
         async function recusar(id) { await atualizarStatus(id, 'cancelado') }
 
         async function atualizarStatus(id, status) {
-            try {
-                const res = await fetch(`http://localhost:3000/api/gestor/solicitacao/${id}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ status })
-                })
-                const data = await res.json()
-                if (data.sucesso) {
-                    alert(`Solicitação ${status} com sucesso!`)
-                    carregarPendentes()
-                }
-            } catch (error) {
-                console.error(error)
-            }
+            const res = await fetch(`http://localhost:3000/api/gestor/solicitacao/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ status })
+            })
+            const data = await res.json()
+            if (data.sucesso) { alert(`Solicitação ${status} com sucesso!`); carregarPendentes() }
         }
 
-        function sair() {
-            localStorage.clear()
-            window.location.href = '/login.html'
+        // ── CALENDÁRIO ──
+        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+        let hoje = new Date()
+        let calMes = hoje.getMonth()
+        let calAno = hoje.getFullYear()
+        let eventosCal = []
+
+        function mudarMes(dir) { calMes += dir; if (calMes > 11) { calMes = 0; calAno++ } if (calMes < 0) { calMes = 11; calAno-- } renderCalendario() }
+        function irParaHoje() { calMes = hoje.getMonth(); calAno = hoje.getFullYear(); renderCalendario() }
+
+        async function renderCalendario() {
+            document.getElementById('cal-titulo').textContent = `${meses[calMes]} ${calAno}`
+
+            const res = await fetch(`http://localhost:3000/api/gestor/calendario?mes=${calMes + 1}&ano=${calAno}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            const data = await res.json()
+            eventosCal = data.dados || []
+
+            const primeiroDia = new Date(calAno, calMes, 1).getDay()
+            const ultimoDia = new Date(calAno, calMes + 1, 0).getDate()
+            const diasAnteriores = new Date(calAno, calMes, 0).getDate()
+
+            let html = ''
+
+            // Dias do mês anterior
+            for (let i = primeiroDia - 1; i >= 0; i--) {
+                html += `<div class="cal-dia outro-mes">
+        <div class="cal-dia-numero">${diasAnteriores - i}</div>
+      </div>`
+            }
+
+            // Dias do mês atual
+            for (let dia = 1; dia <= ultimoDia; dia++) {
+                const dataStr = `${calAno}-${String(calMes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`
+                const ehHoje = dia === hoje.getDate() && calMes === hoje.getMonth() && calAno === hoje.getFullYear()
+
+                const eventos = eventosCal.filter(e => {
+                    const d = new Date(e.data_partida)
+                    return d.getUTCDate() === dia
+                })
+
+                const maxVisiveis = 3
+                const eventosVisiveis = eventos.slice(0, maxVisiveis)
+                const extras = eventos.length - maxVisiveis
+
+                const eventosHtml = eventosVisiveis.map(e => `
+        <div class="cal-evento" onclick="abrirEvento('${e.id}', event)" title="${e.motivo ?? ''}">
+          ${e.hora_partida ? formatarHora(e.hora_partida) + ' ' : ''}${e.solicitante}
+        </div>`).join('')
+
+                const maisHtml = extras > 0 ? `<div class="cal-mais">+${extras} mais</div>` : ''
+
+                html += `<div class="cal-dia${ehHoje ? ' hoje' : ''}">
+        <div class="cal-dia-numero">${dia}</div>
+        ${eventosHtml}${maisHtml}
+      </div>`
+            }
+
+            // Completar última semana
+            const totalCelulas = primeiroDia + ultimoDia
+            const restantes = totalCelulas % 7 === 0 ? 0 : 7 - (totalCelulas % 7)
+            for (let i = 1; i <= restantes; i++) {
+                html += `<div class="cal-dia outro-mes"><div class="cal-dia-numero">${i}</div></div>`
+            }
+
+            document.getElementById('cal-dias').innerHTML = html
         }
+
+        function formatarHora(hora) {
+            if (!hora) return ''
+            return String(hora).slice(0, 5)
+        }
+
+        function abrirEvento(id, event) {
+            event.stopPropagation()
+            const evento = eventosCal.find(e => e.id === id)
+            if (!evento) return
+
+            document.getElementById('modal-titulo').textContent = `Solicitação #${evento.numero_solicitacao}`
+            document.getElementById('modal-body').innerHTML = `
+      <p><strong>Solicitante:</strong> ${evento.solicitante}</p>
+      <p><strong>Motivo:</strong> ${evento.motivo ?? '-'}</p>
+      <p><strong>Origem:</strong> ${evento.local_origem ?? '-'}</p>
+      <p><strong>Destino:</strong> ${evento.local_destino ?? '-'}</p>
+      <p><strong>Data:</strong> ${new Date(evento.data_partida).toLocaleDateString('pt-BR')}</p>
+      <p><strong>Horário:</strong> ${formatarHora(evento.hora_partida) || '-'}</p>
+    `
+            document.getElementById('modalEvento').classList.add('aberto')
+        }
+
+        function fecharModal(event) {
+            if (event.target === document.getElementById('modalEvento'))
+                document.getElementById('modalEvento').classList.remove('aberto')
+        }
+
+        function fecharModalBtn() {
+            document.getElementById('modalEvento').classList.remove('aberto')
+        }
+
+        function sair() { localStorage.clear(); window.location.href = '/login.html' }
 
         carregarPendentes()
     </script>
