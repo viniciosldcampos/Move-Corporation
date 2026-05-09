@@ -1,5 +1,9 @@
 import prisma from '../database/prisma.js'
 
+// Converte BigInt para string em qualquer objeto
+const serializeBigInt = (obj) =>
+  JSON.parse(JSON.stringify(obj, (_, v) => typeof v === 'bigint' ? v.toString() : v))
+
 export async function listarDepartamentos(req, res) {
   try {
     const departamentos = await prisma.departamentos.findMany({
@@ -8,7 +12,7 @@ export async function listarDepartamentos(req, res) {
     const centros = await prisma.centros_custo.findMany({
       orderBy: { nome: 'asc' }
     })
-    res.json({ sucesso: true, departamentos, centros })
+    res.json({ sucesso: true, ...serializeBigInt({ departamentos, centros }) })
   } catch (error) {
     res.status(500).json({ erro: error.message })
   }
