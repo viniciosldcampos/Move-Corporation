@@ -42,7 +42,7 @@ form.addEventListener('submit', async (e) => {
     const data = await res.json()
 
     if (data.sucesso) {
-      alert(`Solicitação #${payload.numero_solicitacao} criada com sucesso!`)
+      alert(`Solicitação criada com sucesso! ID: ${data.id}`)
       form.reset()
     } else {
       alert(`Erro ao criar solicitação: ${data.erro}`)

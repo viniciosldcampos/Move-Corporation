@@ -31,7 +31,8 @@
                 <!-- Campo de Numero do Registro do Colaborador -->
                 <div class="numberRegistry">
                     <label for=""></label>
-                    <input type="text" id="numberRegistry" name="numberRegistre" placeholder="Numero do Colaborador" disabled>
+                    <input type="text" id="numberRegistry" name="numberRegistre" placeholder="Numero do Colaborador"
+                        disabled>
                 </div>
             </div>
             <!-- Campo de Numero do telefone de contato -->
@@ -39,13 +40,11 @@
                 <!-- Campo de email de contato -->
                 <div class="contact-email">
                     <label for="email">E-mail</label>
-                    <input type="email" id="email" name="email" placeholder="usuario@dominio.com"
-                        pattern="[0-9]{3}-[0-9]{5}-[0-9]{4}">
+                    <input type="email" id="email" name="email" placeholder="usuario@dominio.com">
                 </div>
                 <div class="contact-phone">
                     <label for="phone">Telefone</label>
-                    <input type="tel" id="phone" name="phone" placeholder="(00) 12345-6789"
-                        pattern="[0-9]{3}-[0-9]{5}-[0-9]{4}">
+                    <input type="tel" id="phone" name="phone" placeholder="(00) 12345-6789">
                 </div>
             </div>
             <!-- Informações do Departamento -->
@@ -77,13 +76,9 @@
 
             <div class="resquestAbout">
                 <label for="">Motivo da Solicitação</label>
-                <textarea 
-                    class="input-Resquest" 
-                    id="request"
-                    maxlength="600"
-                ></textarea>
+                <textarea class="input-Resquest" id="request" maxlength="600"></textarea>
             </div>
-            
+
             <!-- Campo de Seleção do Carro -->
             <div class="selectCar">
                 <label for="">Veículo</label>
@@ -93,18 +88,20 @@
                     <option>Ônibus</option>
                 </select>
             </div>
-            
+
             <!-- Campo de nome dos Passageiros -->
             <div class="passengers">
                 <label for="">Passageiro</label>
                 <div class="input-group">
                     <input type="text" name="" id="" placeholder="Digite o nome do passageiro">
-                    <button class="add-Button" type="button" onclick="addInputPassengers()" title="Clique para adicionar outros passageiros no transporte"><i class="fa-solid fa-plus"></i></button>
+                    <button class="add-Button" type="button" onclick="addInputPassengers()"
+                        title="Clique para adicionar outros passageiros no transporte"><i
+                            class="fa-solid fa-plus"></i></button>
                 </div>
             </div>
-            
+
             <!-- SEÇÃO: INFORMAÇÕES DATA E HORA DO Pedido de Transporte -->
-            
+
             <!-- Campo da Data e horário de Partida -->
             <div class="dateContainer">
                 <div class="dateHour">
@@ -118,7 +115,7 @@
                         <input type="time">
                     </div>
                 </div>
-                
+
                 <!-- Campo de data e hora da Chegada (Destino) -->
                 <div class="dateHour">
                     <div>
@@ -132,36 +129,40 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Campo de Local de Partida (Origem) e Paradas no Caminho -->
             <div class="localOrigin">
                 <label>Local de Origem</label>
                 <div class="input-group">
                     <input type="text" name="" id="" placeholder="Endereço do local de origem">
-                    <button title="Clique para adicionar paradas no trajeto" type="button" onclick="addRouteStop()" class="add-Button"><i class="fa-solid fa-plus"></i></button>
+                    <button title="Clique para adicionar paradas no trajeto" type="button" onclick="addRouteStop()"
+                        class="add-Button"><i class="fa-solid fa-plus"></i></button>
                 </div>
             </div>
-            
+
             <!-- Campo de Local de Chegada (Destino) -->
             <div class="localDestination">
                 <label>Local de Destino</label>
-                <input type="text" name="" id="" placeholder="R. Fabiano Alves, 363 - Vila Prudente, São Paulo - SP, 03139-010">
+                <input type="text" name="" id=""
+                    placeholder="R. Fabiano Alves, 363 - Vila Prudente, São Paulo - SP, 03139-010">
             </div>
         </section>
         <!-- SEÇÃO: INFORMAÇÕES do MOTORISTA  -->
-<!-- SEÇÃO: INFORMAÇÕES do MOTORISTA  -->
+        <!-- SEÇÃO: INFORMAÇÕES do MOTORISTA  -->
         <section class="sectionDriver">
             <div class="driverInformation">
                 <div class="box-1">
                     <label for="interno">Motorista interno
-                    <input type="radio" id="interno" name="driverType" value="interno" onclick="openModalInternalDriver()" required>
+                        <input type="radio" id="interno" name="driverType" value="interno"
+                            onclick="openModalInternalDriver()" required>
                     </label>
                 </div>
             </div>
             <div class="driverInformation">
                 <div class="box-2">
                     <label for="externo">Cadastrar Motorista
-                    <input type="radio" id="externo" name="driverType" value="externo" onclick="openModalExternalDriver()">
+                        <input type="radio" id="externo" name="driverType" value="externo"
+                            onclick="openModalExternalDriver()">
                     </label>
                 </div>
             </div>
@@ -197,16 +198,16 @@
                     <input type="text" name="" id="" placeholder="Numero do CPF">
                     <input type="text" name="" id="" placeholder="Numero da CNH">
                 </div>
-                    <label class="file-upload">
-                        <span>📎 Anexar documentos</span>
-                        <input type="file" name="" id="" multiple>
-                    </label>
+                <label class="file-upload">
+                    <span>📎 Anexar documentos</span>
+                    <input type="file" name="" id="" multiple>
+                </label>
                 <div class="modal-footer">
                     <button class="btn-save" type="button">Salvar</button>
                 </div>
             </div>
         </div>
-        
+
         <!-- SEÇÃO: NECESSIDADE DE AJUDANTES E ANEXOS  -->
         <section class="section moreInformationSection">
             <div>
