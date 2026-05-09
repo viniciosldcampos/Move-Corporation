@@ -52,3 +52,50 @@ export async function atualizarStatus(req, res) {
     res.status(500).json({ erro: 'Erro ao atualizar status.' })
   }
 }
+
+export async function listarHistorico(req, res) {
+  const { status, data_inicio, data_fim } = req.query
+
+  try {
+    const filtro = {}
+
+    if (status) filtro.status = status
+
+    if (data_inicio || data_fim) {
+      filtro.data_hora_solicitacao = {}
+      if (data_inicio) filtro.data_hora_solicitacao.gte = new Date(data_inicio)
+      if (data_fim) filtro.data_hora_solicitacao.lte = new Date(data_fim + 'T23:59:59')
+    }
+
+    const solicitacoes = await prisma.solicitacoes_transporte.findMany({
+      where: filtro,
+      orderBy: { data_hora_solicitacao: 'desc' }
+    })
+
+    const resultado = await Promise.all(solicitacoes.map(async (s) => {
+      const funcionario = await prisma.funcionarios.findFirst({
+        where: { id: s.solicitante_id }
+      })
+      const pessoa = funcionario
+        ? await prisma.pessoas.findFirst({ where: { id: funcionario.pessoa_id } })
+        : null
+
+      return {
+        id: s.id.toString(),
+        numero_solicitacao: s.numero_solicitacao,
+        motivo: s.motivo,
+        status: s.status,
+        local_origem: s.local_origem,
+        local_destino: s.local_destino,
+        data_partida: s.data_partida,
+        data_hora_solicitacao: s.data_hora_solicitacao,
+        solicitante: pessoa?.nome ?? 'Desconhecido'
+      }
+    }))
+
+    res.json({ sucesso: true, dados: resultado })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ erro: 'Erro ao buscar histórico.' })
+  }
+}
