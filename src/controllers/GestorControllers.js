@@ -99,3 +99,48 @@ export async function listarHistorico(req, res) {
     res.status(500).json({ erro: 'Erro ao buscar histórico.' })
   }
 }
+
+export async function listarCalendario(req, res) {
+  const { mes, ano } = req.query
+
+  const mesNum = parseInt(mes) || new Date().getMonth() + 1
+  const anoNum = parseInt(ano) || new Date().getFullYear()
+
+  const inicio = new Date(anoNum, mesNum - 1, 1)
+  const fim = new Date(anoNum, mesNum, 0, 23, 59, 59)
+
+  try {
+    const solicitacoes = await prisma.solicitacoes_transporte.findMany({
+      where: {
+        status: 'aprovado',
+        data_partida: { gte: inicio, lte: fim }
+      },
+      orderBy: { hora_partida: 'asc' }
+    })
+
+    const resultado = await Promise.all(solicitacoes.map(async (s) => {
+      const funcionario = await prisma.funcionarios.findFirst({
+        where: { id: s.solicitante_id }
+      })
+      const pessoa = funcionario
+        ? await prisma.pessoas.findFirst({ where: { id: funcionario.pessoa_id } })
+        : null
+
+      return {
+        id: s.id.toString(),
+        numero_solicitacao: s.numero_solicitacao,
+        motivo: s.motivo,
+        local_origem: s.local_origem,
+        local_destino: s.local_destino,
+        data_partida: s.data_partida,
+        hora_partida: s.hora_partida,
+        solicitante: pessoa?.nome ?? 'Desconhecido'
+      }
+    }))
+
+    res.json({ sucesso: true, dados: resultado })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ erro: 'Erro ao buscar calendário.' })
+  }
+}
