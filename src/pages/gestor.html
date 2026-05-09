@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move-Corporation | Gestor</title>
+</head>
+
+<body>
+    <h1>Painel do Gestor — <span id="nomeGestor"></span></h1>
+    <a href="/index.html">Solicitar Transporte</a>
+    <script>
+        const nome = localStorage.getItem('nome')
+        const perfil = localStorage.getItem('perfil')
+        if (!nome || perfil !== 'gestor') window.location.href = '/login.html'
+        document.getElementById('nomeGestor').textContent = nome
+    </script>
+</body>
+
+</html>
