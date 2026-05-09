@@ -1,8 +1,9 @@
 import { Router } from 'express'
-import { listarPendentes } from '../controllers/GestorControllers.js'
+import { listarPendentes, atualizarStatus } from '../controllers/GestorControllers.js'
 
 const router = Router()
 
 router.get('/pendentes', listarPendentes)
+router.patch('/solicitacao/:id', atualizarStatus)
 
 export default router

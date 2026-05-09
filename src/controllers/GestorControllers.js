@@ -35,3 +35,20 @@ export async function listarPendentes(req, res) {
     res.status(500).json({ erro: 'Erro ao buscar solicitações.' })
   }
 }
+
+export async function atualizarStatus(req, res) {
+  const { id } = req.params
+  const { status } = req.body
+
+  try {
+    await prisma.solicitacoes_transporte.update({
+      where: { id: BigInt(id) },
+      data: { status }
+    })
+
+    res.json({ sucesso: true })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ erro: 'Erro ao atualizar status.' })
+  }
+}
