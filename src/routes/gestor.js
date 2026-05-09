@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { listarPendentes } from '../controllers/GestorController.js'
+import { listarPendentes } from '../controllers/GestorControllers.js'
 
 const router = Router()
 
