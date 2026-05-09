@@ -45,14 +45,85 @@ header button {
     text-decoration: none;
 }
 
+nav {
+    background: white;
+    border-bottom: 2px solid #e0e0e0;
+    display: flex;
+    gap: 0;
+    padding: 0 32px;
+}
+
+nav button {
+    background: none;
+    border: none;
+    padding: 14px 24px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+}
+
+nav button.ativo {
+    color: #1a73e8;
+    border-bottom-color: #1a73e8;
+    font-weight: bold;
+}
+
 main {
     padding: 32px;
+}
+
+.secao {
+    display: none;
+}
+
+.secao.ativa {
+    display: block;
 }
 
 h2 {
     margin-bottom: 16px;
     font-size: 18px;
     color: #444;
+}
+
+.filtros {
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.filtros label {
+    font-size: 13px;
+    color: #555;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.filtros select,
+.filtros input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.filtros button {
+    background: #1a73e8;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
 }
 
 table {
@@ -93,8 +164,28 @@ tbody tr:hover {
 }
 
 .badge.pendente {
-    background: #bed6ff;
-    color: #0b0d96;
+    background: #fff3cd;
+    color: #856404;
+}
+
+.badge.aprovado {
+    background: #d4edda;
+    color: #155724;
+}
+
+.badge.cancelado {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.badge.em_andamento {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.badge.concluido {
+    background: #e2e3e5;
+    color: #383d41;
 }
 
 .acoes {

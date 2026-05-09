@@ -19,9 +19,44 @@
         </div>
     </header>
 
+    <nav>
+        <button class="ativo" onclick="trocarAba('pendentes', this)">Pendentes</button>
+        <button onclick="trocarAba('historico', this)">Histórico</button>
+    </nav>
+
     <main>
-        <h2>Solicitações Pendentes</h2>
-        <div id="conteudo"></div>
+        <!-- ABA PENDENTES -->
+        <div id="secao-pendentes" class="secao ativa">
+            <h2>Solicitações Pendentes</h2>
+            <div id="conteudo-pendentes"></div>
+        </div>
+
+        <!-- ABA HISTÓRICO -->
+        <div id="secao-historico" class="secao">
+            <h2>Histórico de Solicitações</h2>
+
+            <div class="filtros">
+                <label>Status
+                    <select id="filtro-status">
+                        <option value="">Todos</option>
+                        <option value="pendente">Pendente</option>
+                        <option value="aprovado">Aprovado</option>
+                        <option value="cancelado">Cancelado</option>
+                        <option value="em_andamento">Em andamento</option>
+                        <option value="concluido">Concluído</option>
+                    </select>
+                </label>
+                <label>Data início
+                    <input type="date" id="filtro-data-inicio">
+                </label>
+                <label>Data fim
+                    <input type="date" id="filtro-data-fim">
+                </label>
+                <button onclick="carregarHistorico()">Filtrar</button>
+            </div>
+
+            <div id="conteudo-historico"></div>
+        </div>
     </main>
 
     <script>
@@ -30,8 +65,60 @@
         const token = localStorage.getItem('token')
 
         if (!nome || perfil !== 'gestor') window.location.href = '/login.html'
-
         document.getElementById('nomeGestor').textContent = nome
+
+        function trocarAba(aba, btn) {
+            document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'))
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('ativo'))
+            document.getElementById('secao-' + aba).classList.add('ativa')
+            btn.classList.add('ativo')
+
+            if (aba === 'pendentes') carregarPendentes()
+            if (aba === 'historico') carregarHistorico()
+        }
+
+        function renderTabela(dados, mostrarAcoes = false) {
+            if (!dados || dados.length === 0) {
+                return '<div class="vazio">Nenhuma solicitação encontrada.</div>'
+            }
+
+            const linhas = dados.map(s => `
+      <tr>
+        <td>#${s.numero_solicitacao}</td>
+        <td>${s.solicitante}</td>
+        <td>${s.motivo ?? '-'}</td>
+        <td>${s.local_origem ?? '-'}</td>
+        <td>${s.local_destino ?? '-'}</td>
+        <td>${s.data_partida ? new Date(s.data_partida).toLocaleDateString('pt-BR') : '-'}</td>
+        <td><span class="badge ${s.status}">${s.status}</span></td>
+        ${mostrarAcoes ? `
+        <td>
+          <div class="acoes">
+            <button class="btn-aprovar" onclick="aprovar('${s.id}')">Aprovar</button>
+            <button class="btn-recusar" onclick="recusar('${s.id}')">Recusar</button>
+          </div>
+        </td>` : '<td>-</td>'}
+      </tr>
+    `).join('')
+
+            return `
+      <table>
+        <thead>
+          <tr>
+            <th>Numero</th>
+            <th>Solicitante</th>
+            <th>Motivo</th>
+            <th>Origem</th>
+            <th>Destino</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>${linhas}</tbody>
+      </table>
+    `
+        }
 
         async function carregarPendentes() {
             try {
@@ -39,61 +126,35 @@
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 const data = await res.json()
-
-                const conteudo = document.getElementById('conteudo')
-
-                if (!data.dados || data.dados.length === 0) {
-                    conteudo.innerHTML = '<div class="vazio">Nenhuma solicitação pendente.</div>'
-                    return
-                }
-
-                const linhas = data.dados.map(s => `
-        <tr>
-          <td>#${s.numero_solicitacao}</td>
-          <td>${s.solicitante}</td>
-          <td>${s.motivo ?? '-'}</td>
-          <td>${s.local_origem ?? '-'}</td>
-          <td>${s.local_destino ?? '-'}</td>
-          <td>${s.data_partida ? new Date(s.data_partida).toLocaleDateString('pt-BR') : '-'}</td>
-          <td><span class="badge pendente">${s.status}</span></td>
-          <td>
-            <div class="acoes">
-              <button class="btn-aprovar" onclick="aprovar('${s.id}')">Aprovar</button>
-              <button class="btn-recusar" onclick="recusar('${s.id}')">Recusar</button>
-            </div>
-          </td>
-        </tr>
-      `).join('')
-
-                conteudo.innerHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>Numero</th>
-              <th>Solicitante</th>
-              <th>Motivo</th>
-              <th>Origem</th>
-              <th>Destino</th>
-              <th>Data</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>${linhas}</tbody>
-        </table>
-      `
+                document.getElementById('conteudo-pendentes').innerHTML = renderTabela(data.dados, true)
             } catch (error) {
                 console.error(error)
             }
         }
 
-        async function aprovar(id) {
-            await atualizarStatus(id, 'aprovado')
+        async function carregarHistorico() {
+            try {
+                const status = document.getElementById('filtro-status').value
+                const dataInicio = document.getElementById('filtro-data-inicio').value
+                const dataFim = document.getElementById('filtro-data-fim').value
+
+                const params = new URLSearchParams()
+                if (status) params.append('status', status)
+                if (dataInicio) params.append('data_inicio', dataInicio)
+                if (dataFim) params.append('data_fim', dataFim)
+
+                const res = await fetch(`http://localhost:3000/api/gestor/historico?${params}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                const data = await res.json()
+                document.getElementById('conteudo-historico').innerHTML = renderTabela(data.dados, false)
+            } catch (error) {
+                console.error(error)
+            }
         }
 
-        async function recusar(id) {
-            await atualizarStatus(id, 'cancelado')
-        }
+        async function aprovar(id) { await atualizarStatus(id, 'aprovado') }
+        async function recusar(id) { await atualizarStatus(id, 'cancelado') }
 
         async function atualizarStatus(id, status) {
             try {
@@ -105,7 +166,6 @@
                     },
                     body: JSON.stringify({ status })
                 })
-
                 const data = await res.json()
                 if (data.sucesso) {
                     alert(`Solicitação ${status} com sucesso!`)
