@@ -7,8 +7,7 @@ export async function login(req, res) {
 
   try {
     const usuario = await prisma.usuarios.findFirst({
-      where: { email, perfil, ativo: true },
-      include: { pessoas: true }
+      where: { email, perfil, ativo: true }
     })
 
     if (!usuario) {
@@ -20,6 +19,11 @@ export async function login(req, res) {
       return res.status(401).json({ erro: 'Senha incorreta.' })
     }
 
+    // Busca o nome da pessoa separadamente
+    const pessoa = await prisma.pessoas.findFirst({
+      where: { id: usuario.pessoa_id }
+    })
+
     await prisma.usuarios.update({
       where: { id: usuario.id },
       data: { ultimo_acesso: new Date() }
@@ -29,7 +33,7 @@ export async function login(req, res) {
       {
         id: usuario.id.toString(),
         perfil: usuario.perfil,
-        nome: usuario.pessoas.nome,
+        nome: pessoa.nome,
         email: usuario.email
       },
       process.env.JWT_SECRET,
@@ -40,7 +44,7 @@ export async function login(req, res) {
       sucesso: true,
       token,
       perfil: usuario.perfil,
-      nome: usuario.pessoas.nome
+      nome: pessoa.nome
     })
 
   } catch (error) {
