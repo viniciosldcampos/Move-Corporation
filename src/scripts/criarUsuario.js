@@ -9,7 +9,7 @@ async function criarUsuario() {
     data: {
       pessoa_id: 1,
       email: 'usuario@teste.com',
-      senha_hash: 123,
+      senha_hash: 123456,
       perfil: 'usuario'
     }
   })
@@ -19,7 +19,7 @@ async function criarUsuario() {
     data: {
       pessoa_id: 1,
       email: 'gestor@teste.com',
-      senha_hash: 123,
+      senha_hash: 123456,
       perfil: 'gestor'
     }
   })
