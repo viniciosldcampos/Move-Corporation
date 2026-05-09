@@ -18,9 +18,12 @@ export async function criarSolicitacao(req, res) {
   } = req.body
 
   try {
-    const numero_solicitacao = Date.now()
+    const ultima = await prisma.solicitacoes_transporte.findFirst({
+      orderBy: { numero_solicitacao: 'desc' },
+      select: { numero_solicitacao: true }
+    })
+    const numero_solicitacao = ultima ? Number(ultima.numero_solicitacao) + 1 : 1
 
-    // 1. Cria a solicitação principal
     const solicitacao = await prisma.solicitacoes_transporte.create({
       data: {
         numero_solicitacao,
@@ -29,10 +32,23 @@ export async function criarSolicitacao(req, res) {
         veiculo_id: veiculo_id ? parseInt(veiculo_id) : null,
         motorista_id: motorista_id ? parseInt(motorista_id) : null,
         ajudantes: parseInt(ajudantes) || 0,
-        data_partida: data_partida ? new Date(data_partida) : null,
-        hora_partida: hora_partida || null,
-        data_chegada: data_chegada ? new Date(data_chegada) : null,
-        hora_chegada: hora_chegada || null,
+
+        data_partida: data_partida && hora_partida
+          ? new Date(`${data_partida}T${hora_partida}:00`)
+          : null,
+
+        hora_partida: data_partida && hora_partida
+          ? new Date(`${data_partida}T${hora_partida}:00`)
+          : null,
+
+        data_chegada: data_chegada && hora_chegada
+          ? new Date(`${data_chegada}T${hora_chegada}:00`)
+          : null,
+
+        hora_chegada: data_chegada && hora_chegada
+          ? new Date(`${data_chegada}T${hora_chegada}:00`)
+          : null,
+
         local_origem,
         local_destino,
       }
@@ -40,7 +56,6 @@ export async function criarSolicitacao(req, res) {
 
     const solicitacaoId = Number(solicitacao.id)
 
-    // 2. Cria os passageiros separadamente
     if (passageiros?.length > 0) {
       await prisma.passageiros_solicitacao.createMany({
         data: passageiros.map(nome => ({
@@ -50,7 +65,6 @@ export async function criarSolicitacao(req, res) {
       })
     }
 
-    // 3. Cria as paradas separadamente
     if (paradas?.length > 0) {
       await prisma.paradas_trajeto.createMany({
         data: paradas.map((endereco, i) => ({
