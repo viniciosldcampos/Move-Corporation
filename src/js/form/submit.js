@@ -3,24 +3,29 @@ const form = document.querySelector('form')
 form.addEventListener('submit', async (e) => {
   e.preventDefault()
 
-  // Coleta passageiros (todos os inputs do campo passageiros)
   const passageiros = [...document.querySelectorAll('.passengers input[type="text"]')]
-    .map(i => i.value.trim())
-    .filter(v => v !== '')
+    .map(i => i.value.trim()).filter(v => v !== '')
 
-  // Coleta paradas (todos os inputs de parada adicionados)
   const paradas = [...document.querySelectorAll('.localOrigin input[type="text"]')]
-    .map(i => i.value.trim())
-    .filter(v => v !== '')
+    .map(i => i.value.trim()).filter(v => v !== '')
 
-  const userLogged = JSON.parse(localStorage.getItem('userLogged'))
+  const token = localStorage.getItem('token')
+  let solicitante_id = null
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      solicitante_id = payload.id
+    } catch {}
+  }
+
+  // Pega o motorista_id selecionado no modal interno
+  const motoristaId = document.getElementById('selectedDriver')?.dataset.motoristaId || null
 
   const payload = {
-    numero_solicitacao: document.getElementById('numberSolicitation').value,
-    solicitante_id: userLogged?.id,
+    solicitante_id,
     motivo: document.getElementById('request').value,
-    veiculo_id: null,   // adicionar quando tiver select de veículo com id do banco
-    motorista_id: null, // adicionar quando tiver motorista selecionado
+    veiculo_id: document.getElementById('selectVeiculo')?.value || null,
+    motorista_id: motoristaId,
     ajudantes: document.querySelector('.moreInformationSection input[type="number"]').value,
     data_partida: document.querySelectorAll('.date-input')[0]?.value,
     hora_partida: document.querySelectorAll('input[type="time"]')[0]?.value,
@@ -38,9 +43,7 @@ form.addEventListener('submit', async (e) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     })
-
     const data = await res.json()
-
     if (data.sucesso) {
       alert(`Solicitação criada com sucesso! ID: ${data.id}`)
       form.reset()
