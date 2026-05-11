@@ -607,7 +607,8 @@
                     </thead>
                     <tbody>${dataPend.dados.map(m => `
                         <tr>
-                            <td>${m.nome}</td><td>${m.cnh}</td>
+                            <td>${m.nome}</td>
+                            <td>${m.cnh}</td>
                             <td>${m.validade_cnh ? new Date(m.validade_cnh).toLocaleDateString('pt-BR') : '-'}</td>
                             <td>${m.tipo}</td>
                             <td><button class="btn-aprovar" onclick="aprovarMotorista('${m.id}')">Aprovar</button></td>
