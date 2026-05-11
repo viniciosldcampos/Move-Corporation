@@ -93,21 +93,43 @@
             <div class="cadastro-container">
                 <div class="cadastro-form">
                     <h3>Cadastrar Funcionário</h3>
-                    <div class="form-group"><label>Nome completo</label><input type="text" id="func-nome"
+
+                    <div id="func-info-box" class="info-box">
+                        <strong>🔑 Credenciais geradas automaticamente:</strong>
+                        <span id="func-info-texto"></span>
+                    </div>
+
+                    <!-- Dados pessoais -->
+                    <div class="form-group"><label>Nome completo *</label><input type="text" id="func-nome"
                             placeholder="Nome completo"></div>
-                    <div class="form-group"><label>CPF</label><input type="text" id="func-cpf"
-                            placeholder="000.000.000-00"></div>
-                    <div class="form-group"><label>E-mail</label><input type="email" id="func-email"
-                            placeholder="email@empresa.com"></div>
+                    <div class="form-group"><label>CPF *</label><input type="text" id="func-cpf"
+                            placeholder="000.000.000-00"><small>A senha padrão será o CPF sem pontos e traço</small>
+                    </div>
+                    <div class="form-group"><label>RG</label><input type="text" id="func-rg" placeholder="00.000.000-0">
+                    </div>
+                    <div class="form-group"><label>E-mail *</label><input type="email" id="func-email"
+                            placeholder="email@empresa.com"><small>Será usado como login no sistema</small></div>
                     <div class="form-group"><label>Telefone</label><input type="tel" id="func-telefone"
                             placeholder="(00) 00000-0000"></div>
-                    <div class="form-group"><label>Matrícula</label><input type="text" id="func-matricula"
+
+                    <!-- Dados profissionais -->
+                    <div class="form-group"><label>Matrícula *</label><input type="text" id="func-matricula"
                             placeholder="Ex: 1001"></div>
                     <div class="form-group"><label>Departamento</label><select id="func-departamento">
                             <option value="">Selecione...</option>
                         </select></div>
-                    <div class="form-group"><label>Data de contratação</label><input type="date" id="func-data"></div>
-                    <button class="btn-cadastrar" onclick="cadastrarFuncionario()">Cadastrar</button>
+                    <div class="form-group"><label>Cargo</label><select id="func-cargo">
+                            <option value="">Selecione...</option>
+                        </select></div>
+                    <div class="form-group"><label>Perfil de acesso</label>
+                        <select id="func-perfil">
+                            <option value="usuario">Usuário</option>
+                            <option value="gestor">Gestor</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Data de contratação *</label><input type="date" id="func-data"></div>
+
+                    <button class="btn-cadastrar" onclick="cadastrarFuncionario()">Cadastrar e Gerar Acesso</button>
                 </div>
             </div>
         </div>
@@ -152,6 +174,7 @@
                 </div>
             </div>
         </div>
+
         <!-- VEÍCULOS -->
         <div id="secao-veiculos" class="secao">
             <h2>Veículos</h2>
@@ -159,8 +182,7 @@
             <div class="cadastro-container">
                 <div class="cadastro-form">
                     <h3>Cadastrar Veículo</h3>
-                    <div class="form-group">
-                        <label>Tipo</label>
+                    <div class="form-group"><label>Tipo</label>
                         <select id="vei-tipo">
                             <option value="Carro">Carro</option>
                             <option value="Van">Van</option>
@@ -177,16 +199,114 @@
                 </div>
             </div>
         </div>
+
     </main>
 
-    <!-- MODAL EVENTO -->
-    <div class="modal-evento" id="modalEvento" onclick="fecharModal(event)">
-        <div class="modal-evento-content">
-            <div class="modal-evento-header">
+    <!-- MODAL EDITAR DEPARTAMENTO -->
+    <div class="modal-overlay" id="modalEditarDepartamento">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Departamento</h3>
+                <button onclick="fecharModalEditarDepto()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-depto-id">
+                <div class="form-group"><label>Nome</label><input type="text" id="edit-depto-nome"></div>
+                <div class="form-group"><label>Descrição</label><input type="text" id="edit-depto-descricao"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancelar" onclick="fecharModalEditarDepto()">Cancelar</button>
+                <button class="btn-salvar" onclick="salvarEdicaoDepto()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR VEÍCULO -->
+    <div class="modal-overlay" id="modalEditarVeiculo">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Veículo</h3>
+                <button onclick="fecharModalEditarVeiculo()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-vei-id">
+                <div class="form-group"><label>Tipo</label>
+                    <select id="edit-vei-tipo">
+                        <option value="Carro">Carro</option>
+                        <option value="Van">Van</option>
+                        <option value="Ônibus">Ônibus</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Placa</label><input type="text" id="edit-vei-placa"></div>
+                <div class="form-group"><label>Modelo</label><input type="text" id="edit-vei-modelo"></div>
+                <div class="form-group"><label>Capacidade</label><input type="number" id="edit-vei-capacidade" min="1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancelar" onclick="fecharModalEditarVeiculo()">Cancelar</button>
+                <button class="btn-salvar" onclick="salvarEdicaoVeiculo()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR MOTORISTA -->
+    <div class="modal-overlay" id="modalEditarMotorista">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Motorista</h3>
+                <button onclick="fecharModalEditarMotorista()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-mot-id">
+                <div class="form-group"><label>Nome completo</label><input type="text" id="edit-mot-nome"></div>
+                <div class="form-group"><label>CPF</label><input type="text" id="edit-mot-cpf"></div>
+                <div class="form-group"><label>CNH</label><input type="text" id="edit-mot-cnh"></div>
+                <div class="form-group"><label>Validade da CNH</label><input type="date" id="edit-mot-validade"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancelar" onclick="fecharModalEditarMotorista()">Cancelar</button>
+                <button class="btn-salvar" onclick="salvarEdicaoMotorista()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EVENTO CALENDÁRIO -->
+    <div class="modal-overlay" id="modalEvento" onclick="fecharModal(event)">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h3 id="modal-titulo"></h3>
                 <button onclick="fecharModalBtn()">✕</button>
             </div>
-            <div class="modal-evento-body" id="modal-body"></div>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR FUNCIONÁRIO -->
+    <div class="modal-overlay" id="modalEditarFuncionario">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Funcionário</h3>
+                <button onclick="fecharModalEditar()">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-func-id">
+                <div class="form-group"><label>Nome completo</label><input type="text" id="edit-func-nome"></div>
+                <div class="form-group"><label>CPF</label><input type="text" id="edit-func-cpf"></div>
+                <div class="form-group"><label>RG</label><input type="text" id="edit-func-rg"></div>
+                <div class="form-group"><label>E-mail</label><input type="email" id="edit-func-email"></div>
+                <div class="form-group"><label>Telefone</label><input type="tel" id="edit-func-telefone"></div>
+                <div class="form-group"><label>Matrícula</label><input type="text" id="edit-func-matricula"></div>
+                <div class="form-group"><label>Departamento</label><select id="edit-func-departamento">
+                        <option value="">Selecione...</option>
+                    </select></div>
+                <div class="form-group"><label>Cargo</label><select id="edit-func-cargo">
+                        <option value="">Selecione...</option>
+                    </select></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancelar" onclick="fecharModalEditar()">Cancelar</button>
+                <button class="btn-salvar" onclick="salvarEdicaoFuncionario()">Salvar</button>
+            </div>
         </div>
     </div>
 
@@ -200,6 +320,7 @@
         if (!nome || perfil !== 'gestor') window.location.href = '/login.html'
         document.getElementById('nomeGestor').textContent = nome
 
+        // ── ABAS ──
         window.trocarAba = (aba, btn) => {
             document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'))
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('ativo'))
@@ -214,18 +335,37 @@
             if (aba === 'veiculos') carregarVeiculos()
         }
 
+        // ── TABELA SOLICITAÇÕES ──
         function renderTabela(dados, mostrarAcoes = false) {
             if (!dados || dados.length === 0) return '<div class="vazio">Nenhuma solicitação encontrada.</div>'
-            const linhas = dados.map(s => `<tr>
-      <td>#${s.numero_solicitacao}</td><td>${s.solicitante}</td><td>${s.motivo ?? '-'}</td>
-      <td>${s.local_origem ?? '-'}</td><td>${s.local_destino ?? '-'}</td>
-      <td>${s.data_partida ? new Date(s.data_partida).toLocaleDateString('pt-BR') : '-'}</td>
-      <td><span class="badge ${s.status}">${s.status}</span></td>
-      <td>${mostrarAcoes ? `<div class="acoes">
-        <button class="btn-aprovar" onclick="aprovar('${s.id}')">Aprovar</button>
-        <button class="btn-recusar" onclick="recusar('${s.id}')">Recusar</button>
-      </div>` : '-'}</td></tr>`).join('')
-            return `<table><thead><tr><th>#</th><th>Solicitante</th><th>Motivo</th><th>Origem</th><th>Destino</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead><tbody>${linhas}</tbody></table>`
+            const linhas = dados.map(s => `
+            <tr>
+                <td>#${s.numero_solicitacao}</td><td>${s.solicitante}</td>
+                <td>${s.motivo ?? '-'}</td>
+                <td>${s.local_origem ?? '-'}</td><td>${s.local_destino ?? '-'}</td>
+                <td>${s.data_partida ? new Date(s.data_partida).toLocaleDateString('pt-BR') : '-'}</td>
+                <td><span class="badge ${s.status}">${s.status}</span></td>
+                <td>${mostrarAcoes ? `
+                    <div class="acoes">
+                        <button class="btn-aprovar" onclick="aprovar('${s.id}')">Aprovar</button>
+                        <button class="btn-recusar" onclick="recusar('${s.id}')">Recusar</button>
+                        </div>` : '-'}</td>
+            </tr>`).join('')
+            return `<table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Solicitante</th>
+                                <th>Motivo</th>
+                                <th>Origem</th>
+                                <th>Destino</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>${linhas}</tbody>
+                    </table>`
         }
 
         window.carregarPendentes = async () => {
@@ -260,36 +400,170 @@
             if (data.sucesso) { alert(`Solicitação ${status} com sucesso!`); carregarPendentes() }
         }
 
+        // ── FUNCIONÁRIOS ──
         window.carregarFuncionarios = async () => {
             const res = await fetch('http://localhost:3000/api/cadastro/funcionarios', { headers: { Authorization: `Bearer ${token}` } })
             const data = await res.json()
             const el = document.getElementById('conteudo-funcionarios')
-            if (!data.dados || data.dados.length === 0) { el.innerHTML = '<div class="vazio">Nenhum funcionário.</div>'; return }
-            el.innerHTML = `<table><thead><tr><th>Matrícula</th><th>Nome</th><th>Departamento</th><th>Status</th></tr></thead>
-      <tbody>${data.dados.map(f => `<tr><td>${f.matricula}</td><td>${f.nome}</td><td>${f.departamento}</td><td><span class="badge ativo">${f.status}</span></td></tr>`).join('')}</tbody></table>`
+
+            if (!data.dados || data.dados.length === 0) {
+                el.innerHTML = '<div class="vazio">Nenhum funcionário cadastrado.</div>'
+            } else {
+                el.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Matrícula</th>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Departamento</th>
+                            <th>Cargo</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>${data.dados.map(f => `
+                        <tr>
+                            <td>${f.matricula}</td>
+                            <td>${f.nome}</td>
+                            <td>${f.email ?? '-'}</td>
+                            <td>${f.departamento}</td>
+                            <td>${f.cargo ?? '-'}</td>
+                            <td><span class="badge ${f.status}">${f.status}</span></td>
+                            <td><div class="acoes">
+                                <button class="btn-editar" onclick="abrirModalEditar(${JSON.stringify(f).split('"').join('&quot;')})">Editar</button>
+            ${f.status === 'ativo' ? `<button class="btn-desativar" onclick="desativarFuncionario('${f.id}')">Desativar</button>` : ''}
+                            </div></td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>`
+            }
+
+            // Preenche selects do formulário
+            await carregarSelectsDepartamentoCargo()
+        }
+
+        async function carregarSelectsDepartamentoCargo() {
             const depRes = await fetch('http://localhost:3000/api/cadastro/departamentos')
             const depData = await depRes.json()
-            const sel = document.getElementById('func-departamento')
-            sel.innerHTML = '<option value="">Selecione...</option>'
-            depData.departamentos.forEach(d => { sel.innerHTML += `<option value="${d.id}">${d.nome}</option>` })
+
+            const cargoRes = await fetch('http://localhost:3000/api/cadastro/cargos')
+            const cargoData = await cargoRes.json()
+
+            // Select cadastro
+            const selDepto = document.getElementById('func-departamento')
+            selDepto.innerHTML = '<option value="">Selecione...</option>'
+            depData.departamentos?.forEach(d => { selDepto.innerHTML += `<option value="${d.id}">${d.nome}</option>` })
+
+            const selCargo = document.getElementById('func-cargo')
+            selCargo.innerHTML = '<option value="">Selecione...</option>'
+            cargoData.dados?.forEach(c => { selCargo.innerHTML += `<option value="${c.id}">${c.nome}</option>` })
+
+            // Select modal edição
+            const editDepto = document.getElementById('edit-func-departamento')
+            editDepto.innerHTML = '<option value="">Selecione...</option>'
+            depData.departamentos?.forEach(d => { editDepto.innerHTML += `<option value="${d.id}">${d.nome}</option>` })
+
+            const editCargo = document.getElementById('edit-func-cargo')
+            editCargo.innerHTML = '<option value="">Selecione...</option>'
+            cargoData.dados?.forEach(c => { editCargo.innerHTML += `<option value="${c.id}">${c.nome}</option>` })
         }
 
         window.cadastrarFuncionario = async () => {
             const payload = {
-                nome: document.getElementById('func-nome').value, cpf: document.getElementById('func-cpf').value,
-                email: document.getElementById('func-email').value, telefone: document.getElementById('func-telefone').value,
+                nome: document.getElementById('func-nome').value,
+                cpf: document.getElementById('func-cpf').value,
+                rg: document.getElementById('func-rg').value,
+                email: document.getElementById('func-email').value,
+                telefone: document.getElementById('func-telefone').value,
                 matricula: document.getElementById('func-matricula').value,
                 departamento_id: document.getElementById('func-departamento').value,
+                cargo_id: document.getElementById('func-cargo').value,
+                perfil: document.getElementById('func-perfil').value,
                 data_contratacao: document.getElementById('func-data').value
             }
+
+            if (!payload.nome || !payload.cpf || !payload.email || !payload.matricula || !payload.data_contratacao) {
+                alert('Preencha os campos obrigatórios: Nome, CPF, E-mail, Matrícula e Data de contratação.')
+                return
+            }
+
             const res = await fetch('http://localhost:3000/api/cadastro/funcionario', {
-                method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify(payload)
             })
             const data = await res.json()
-            if (data.sucesso) { alert('Funcionário cadastrado!'); carregarFuncionarios() } else alert('Erro: ' + data.erro)
+
+            if (data.sucesso) {
+                // Mostra as credenciais geradas
+                const infoBox = document.getElementById('func-info-box')
+                const infoTexto = document.getElementById('func-info-texto')
+                infoTexto.textContent = `Login: ${payload.email} | Senha: ${payload.cpf.replace(/\D/g, '')}`
+                infoBox.style.display = 'block'
+                alert(`Funcionário cadastrado com sucesso!\n\nLogin: ${payload.email}\nSenha padrão: ${payload.cpf.replace(/\D/g, '')}`)
+                carregarFuncionarios()
+            } else {
+                alert('Erro: ' + data.erro)
+            }
         }
 
+        window.abrirModalEditar = (f) => {
+            document.getElementById('edit-func-id').value = f.id
+            document.getElementById('edit-func-nome').value = f.nome ?? ''
+            document.getElementById('edit-func-cpf').value = f.cpf ?? ''
+            document.getElementById('edit-func-rg').value = f.rg ?? ''
+            document.getElementById('edit-func-email').value = f.email ?? ''
+            document.getElementById('edit-func-telefone').value = f.telefone ?? ''
+            document.getElementById('edit-func-matricula').value = f.matricula ?? ''
+            if (f.departamento_id) document.getElementById('edit-func-departamento').value = f.departamento_id
+            if (f.cargo_id) document.getElementById('edit-func-cargo').value = f.cargo_id
+            document.getElementById('modalEditarFuncionario').classList.add('aberto')
+        }
+
+        window.fecharModalEditar = () => {
+            document.getElementById('modalEditarFuncionario').classList.remove('aberto')
+        }
+
+        window.salvarEdicaoFuncionario = async () => {
+            const id = document.getElementById('edit-func-id').value
+            const payload = {
+                nome: document.getElementById('edit-func-nome').value,
+                cpf: document.getElementById('edit-func-cpf').value,
+                rg: document.getElementById('edit-func-rg').value,
+                email: document.getElementById('edit-func-email').value,
+                telefone: document.getElementById('edit-func-telefone').value,
+                matricula: document.getElementById('edit-func-matricula').value,
+                departamento_id: document.getElementById('edit-func-departamento').value,
+                cargo_id: document.getElementById('edit-func-cargo').value
+            }
+            const res = await fetch(`http://localhost:3000/api/cadastro/funcionario/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify(payload)
+            })
+            const data = await res.json()
+            if (data.sucesso) {
+                alert('Funcionário atualizado com sucesso!')
+                fecharModalEditar()
+                carregarFuncionarios()
+            } else {
+                alert('Erro: ' + data.erro)
+            }
+        }
+
+        window.desativarFuncionario = async (id) => {
+            if (!confirm('Deseja desativar este funcionário?')) return
+            const res = await fetch(`http://localhost:3000/api/cadastro/funcionario/${id}/desativar`, {
+                method: 'PATCH',
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            const data = await res.json()
+            if (data.sucesso) { alert('Funcionário desativado.'); carregarFuncionarios() }
+            else alert('Erro: ' + data.erro)
+        }
+
+        // ── DEPARTAMENTOS ──
         window.carregarDepartamentos = async () => {
             const res = await fetch('http://localhost:3000/api/cadastro/departamentos')
             const data = await res.json()
@@ -309,6 +583,71 @@
             if (data.sucesso) { alert('Departamento cadastrado!'); carregarDepartamentos() } else alert('Erro: ' + data.erro)
         }
 
+        // ── MOTORISTAS ──
+        window.carregarMotoristas = async () => {
+            const res = await fetch('http://localhost:3000/api/cadastro/motoristas/aprovados', { headers: { Authorization: `Bearer ${token}` } })
+            const data = await res.json()
+            const resPend = await fetch('http://localhost:3000/api/cadastro/motoristas/pendentes', { headers: { Authorization: `Bearer ${token}` } })
+            const dataPend = await resPend.json()
+            const el = document.getElementById('conteudo-motoristas')
+
+            let htmlPendentes = ''
+            if (dataPend.dados && dataPend.dados.length > 0) {
+                htmlPendentes = `
+                <h3 style="margin:24px 0 12px;color:#856404">⏳ Aguardando Aprovação</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>CNH</th>
+                            <th>Validade</th>
+                            <th>Tipo</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>${dataPend.dados.map(m => `
+                        <tr>
+                            <td>${m.nome}</td><td>${m.cnh}</td>
+                            <td>${m.validade_cnh ? new Date(m.validade_cnh).toLocaleDateString('pt-BR') : '-'}</td>
+                            <td>${m.tipo}</td>
+                            <td><button class="btn-aprovar" onclick="aprovarMotorista('${m.id}')">Aprovar</button></td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>`
+            }
+
+            const htmlAprovados = !data.dados || data.dados.length === 0
+                ? '<div class="vazio">Nenhum motorista aprovado.</div>'
+                : `<h3 style="margin-bottom:12px;color:#155724">✅ Motoristas Aprovados</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>CNH</th>
+                                    <th>Validade</th>
+                                    <th>Tipo</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>${data.dados.map(m => `
+                                <tr>
+                                    <td>${m.nome}</td><td>${m.cnh}</td>
+                                    <td>${m.validade_cnh ? new Date(m.validade_cnh).toLocaleDateString('pt-BR') : '-'}</td>
+                                    <td>${m.tipo}</td>
+                                    <td><span class="badge aprovado">${m.status}</span></td>
+                                </tr>`).join('')}</tbody></table>`
+
+            el.innerHTML = htmlPendentes + htmlAprovados
+        }
+
+        window.aprovarMotorista = async (id) => {
+            const res = await fetch(`http://localhost:3000/api/cadastro/motorista/${id}/aprovar`, {
+                method: 'PATCH', headers: { Authorization: `Bearer ${token}` }
+            })
+            const data = await res.json()
+            if (data.sucesso) { alert('Motorista aprovado!'); carregarMotoristas() }
+            else alert('Erro: ' + data.erro)
+        }
 
         window.cadastrarMotorista = async () => {
             const payload = {
@@ -324,119 +663,193 @@
             if (data.sucesso) { alert('Motorista cadastrado!'); carregarMotoristas() } else alert('Erro: ' + data.erro)
         }
 
-        window.carregarMotoristas = async () => {
-            const token = localStorage.getItem('token')
-
-            // Motoristas aprovados
-            const res = await fetch('http://localhost:3000/api/cadastro/motoristas/aprovados', {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            const data = await res.json()
-            const el = document.getElementById('conteudo-motoristas')
-
-            // Motoristas pendentes
-            const resPend = await fetch('http://localhost:3000/api/cadastro/motoristas/pendentes', {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            const dataPend = await resPend.json()
-
-            let htmlPendentes = ''
-            if (dataPend.dados && dataPend.dados.length > 0) {
-                htmlPendentes = `
-      <h3 style="margin: 24px 0 12px; color: #856404;">⏳ Aguardando Aprovação</h3>
-      <table>
-        <thead><tr><th>Nome</th><th>CNH</th><th>Validade</th><th>Tipo</th><th>Ação</th></tr></thead>
-        <tbody>${dataPend.dados.map(m => `
-          <tr>
-            <td>${m.nome}</td>
-            <td>${m.cnh}</td>
-            <td>${m.validade_cnh ? new Date(m.validade_cnh).toLocaleDateString('pt-BR') : '-'}</td>
-            <td>${m.tipo}</td>
-            <td><button class="btn-aprovar" onclick="aprovarMotorista('${m.id}')">Aprovar</button></td>
-          </tr>`).join('')}
-        </tbody>
-      </table>`
-            }
-
-            let htmlAprovados = ''
-            if (!data.dados || data.dados.length === 0) {
-                htmlAprovados = '<div class="vazio">Nenhum motorista aprovado.</div>'
-            } else {
-                htmlAprovados = `
-      <h3 style="margin-bottom: 12px; color: #155724;">✅ Motoristas Aprovados</h3>
-      <table>
-        <thead><tr><th>Nome</th><th>CNH</th><th>Validade</th><th>Tipo</th><th>Status</th></tr></thead>
-        <tbody>${data.dados.map(m => `
-          <tr>
-            <td>${m.nome}</td>
-            <td>${m.cnh}</td>
-            <td>${m.validade_cnh ? new Date(m.validade_cnh).toLocaleDateString('pt-BR') : '-'}</td>
-            <td>${m.tipo}</td>
-            <td><span class="badge aprovado">${m.status}</span></td>
-          </tr>`).join('')}
-        </tbody>
-      </table>`
-            }
-
-            el.innerHTML = htmlPendentes + htmlAprovados
-        }
-
-        window.aprovarMotorista = async (id) => {
-            const token = localStorage.getItem('token')
-            const res = await fetch(`http://localhost:3000/api/cadastro/motorista/${id}/aprovar`, {
-                method: 'PATCH',
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            const data = await res.json()
-            if (data.sucesso) {
-                alert('Motorista aprovado e agora disponível como motorista interno!')
-                carregarMotoristas()
-            } else {
-                alert('Erro: ' + data.erro)
-            }
-        }
-
-
+        // ── VEÍCULOS ──
         window.carregarVeiculos = async () => {
-            const res = await fetch('http://localhost:3000/api/cadastro/veiculos', {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+            const res = await fetch('http://localhost:3000/api/cadastro/veiculos', { headers: { Authorization: `Bearer ${token}` } })
             const data = await res.json()
             const el = document.getElementById('conteudo-veiculos')
-            if (!data.dados || data.dados.length === 0) {
-                el.innerHTML = '<div class="vazio">Nenhum veículo cadastrado.</div>'; return
-            }
+            if (!data.dados || data.dados.length === 0) { el.innerHTML = '<div class="vazio">Nenhum veículo.</div>'; return }
             el.innerHTML = `<table>
-    <thead><tr><th>Tipo</th><th>Placa</th><th>Modelo</th><th>Capacidade</th><th>Status</th></tr></thead>
-    <tbody>${data.dados.map(v => `<tr>
-      <td>${v.tipo}</td><td>${v.placa}</td><td>${v.modelo ?? '-'}</td>
-      <td>${v.capacidade ?? '-'}</td>
-      <td><span class="badge ativo">${v.status}</span></td>
-    </tr>`).join('')}</tbody>
-  </table>`
+                                <thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Placa</th>
+                                        <th>Modelo</th>
+                                        <th>Capacidade</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>${data.dados.map(v => `
+                                    <tr>
+                                        <td>${v.tipo}</td>
+                                        <td>${v.placa}</td>
+                                        <td>${v.modelo ?? '-'}</td>
+                                        <td>${v.capacidade ?? '-'}</td>
+                                        <td><span class="badge ativo">${v.status}</span></td>
+                                    </tr>`).join('')}
+                                </tbody>
+                            </table>`
         }
 
         window.cadastrarVeiculo = async () => {
             const payload = {
-                tipo: document.getElementById('vei-tipo').value,
-                placa: document.getElementById('vei-placa').value,
-                modelo: document.getElementById('vei-modelo').value,
-                capacidade: document.getElementById('vei-capacidade').value
+                tipo: document.getElementById('vei-tipo').value, placa: document.getElementById('vei-placa').value,
+                modelo: document.getElementById('vei-modelo').value, capacidade: document.getElementById('vei-capacidade').value
             }
             const res = await fetch('http://localhost:3000/api/cadastro/veiculo', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify(payload)
             })
             const data = await res.json()
-            if (data.sucesso) { alert('Veículo cadastrado!'); carregarVeiculos() }
-            else alert('Erro: ' + data.erro)
+            if (data.sucesso) { alert('Veículo cadastrado!'); carregarVeiculos() } else alert('Erro: ' + data.erro)
         }
 
+        // ── MODAIS ──
+        window.fecharModal = (event) => {
+            if (event.target === document.getElementById('modalEvento'))
+                document.getElementById('modalEvento').classList.remove('aberto')
+        }
+        window.fecharModalBtn = () => document.getElementById('modalEvento').classList.remove('aberto')
 
         window.sair = () => { localStorage.clear(); window.location.href = '/login.html' }
 
         carregarPendentes()
+
+        // ── FUNÇÕES DE EDIÇÃO ──
+        // ── DEPARTAMENTOS - EDIÇÃO ──
+        window.abrirModalEditarDepto = (d) => {
+            document.getElementById('edit-depto-id').value = d.id
+            document.getElementById('edit-depto-nome').value = d.nome ?? ''
+            document.getElementById('edit-depto-descricao').value = d.descricao ?? ''
+            document.getElementById('modalEditarDepartamento').classList.add('aberto')
+        }
+
+        window.fecharModalEditarDepto = () => {
+            document.getElementById('modalEditarDepartamento').classList.remove('aberto')
+        }
+
+        window.salvarEdicaoDepto = async () => {
+            const id = document.getElementById('edit-depto-id').value
+            const payload = {
+                nome: document.getElementById('edit-depto-nome').value,
+                descricao: document.getElementById('edit-depto-descricao').value
+            }
+            const res = await fetch(`http://localhost:3000/api/cadastro/departamento/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify(payload)
+            })
+            const data = await res.json()
+            if (data.sucesso) {
+                alert('Departamento atualizado!')
+                fecharModalEditarDepto()
+                carregarDepartamentos()
+            } else alert('Erro: ' + data.erro)
+        }
+
+        window.desativarDepartamento = async (id) => {
+            if (!confirm('Deseja desativar este departamento?')) return
+            const res = await fetch(`http://localhost:3000/api/cadastro/departamento/${id}/desativar`, {
+                method: 'PATCH',
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            const data = await res.json()
+            if (data.sucesso) { alert('Departamento desativado.'); carregarDepartamentos() }
+            else alert('Erro: ' + data.erro)
+        }
+
+        // ── VEÍCULOS - EDIÇÃO ──
+        window.abrirModalEditarVeiculo = (v) => {
+            document.getElementById('edit-vei-id').value = v.id
+            document.getElementById('edit-vei-tipo').value = v.tipo ?? 'Carro'
+            document.getElementById('edit-vei-placa').value = v.placa ?? ''
+            document.getElementById('edit-vei-modelo').value = v.modelo ?? ''
+            document.getElementById('edit-vei-capacidade').value = v.capacidade ?? ''
+            document.getElementById('modalEditarVeiculo').classList.add('aberto')
+        }
+
+        window.fecharModalEditarVeiculo = () => {
+            document.getElementById('modalEditarVeiculo').classList.remove('aberto')
+        }
+
+        window.salvarEdicaoVeiculo = async () => {
+            const id = document.getElementById('edit-vei-id').value
+            const payload = {
+                tipo: document.getElementById('edit-vei-tipo').value,
+                placa: document.getElementById('edit-vei-placa').value,
+                modelo: document.getElementById('edit-vei-modelo').value,
+                capacidade: document.getElementById('edit-vei-capacidade').value,
+                status: 'disponivel'
+            }
+            const res = await fetch(`http://localhost:3000/api/cadastro/veiculo/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify(payload)
+            })
+            const data = await res.json()
+            if (data.sucesso) {
+                alert('Veículo atualizado!')
+                fecharModalEditarVeiculo()
+                carregarVeiculos()
+            } else alert('Erro: ' + data.erro)
+        }
+
+        window.desativarVeiculo = async (id) => {
+            if (!confirm('Deseja desativar este veículo?')) return
+            const res = await fetch(`http://localhost:3000/api/cadastro/veiculo/${id}/desativar`, {
+                method: 'PATCH',
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            const data = await res.json()
+            if (data.sucesso) { alert('Veículo desativado.'); carregarVeiculos() }
+            else alert('Erro: ' + data.erro)
+        }
+
+        // ── MOTORISTAS - EDIÇÃO ──
+        window.abrirModalEditarMotorista = (m) => {
+            document.getElementById('edit-mot-id').value = m.id
+            document.getElementById('edit-mot-nome').value = m.nome ?? ''
+            document.getElementById('edit-mot-cpf').value = m.cpf ?? ''
+            document.getElementById('edit-mot-cnh').value = m.cnh ?? ''
+            document.getElementById('edit-mot-validade').value = m.validade_cnh ? new Date(m.validade_cnh).toISOString().split('T')[0] : ''
+            document.getElementById('modalEditarMotorista').classList.add('aberto')
+        }
+
+        window.fecharModalEditarMotorista = () => {
+            document.getElementById('modalEditarMotorista').classList.remove('aberto')
+        }
+
+        window.salvarEdicaoMotorista = async () => {
+            const id = document.getElementById('edit-mot-id').value
+            const payload = {
+                nome: document.getElementById('edit-mot-nome').value,
+                cpf: document.getElementById('edit-mot-cpf').value,
+                cnh: document.getElementById('edit-mot-cnh').value,
+                validade_cnh: document.getElementById('edit-mot-validade').value
+            }
+            const res = await fetch(`http://localhost:3000/api/cadastro/motorista/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify(payload)
+            })
+            const data = await res.json()
+            if (data.sucesso) {
+                alert('Motorista atualizado!')
+                fecharModalEditarMotorista()
+                carregarMotoristas()
+            } else alert('Erro: ' + data.erro)
+        }
+
+        window.desativarMotorista = async (id) => {
+            if (!confirm('Deseja desativar este motorista?')) return
+            const res = await fetch(`http://localhost:3000/api/cadastro/motorista/${id}/desativar`, {
+                method: 'PATCH',
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            const data = await res.json()
+            if (data.sucesso) { alert('Motorista desativado.'); carregarMotoristas() }
+            else alert('Erro: ' + data.erro)
+        }
     </script>
 
 </body>
