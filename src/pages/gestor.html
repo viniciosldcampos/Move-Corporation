@@ -14,7 +14,7 @@
         <h1>Move-Corporation</h1>
         <div>
             <span>Olá, <strong id="nomeGestor"></strong></span>
-            <a href="/index.html">Nova Solicitação</a>
+            <a href="/form.html">Nova Solicitação</a>
             <button onclick="sair()">Sair</button>
         </div>
     </header>
@@ -26,6 +26,7 @@
         <button onclick="trocarAba('funcionarios', this)">Funcionários</button>
         <button onclick="trocarAba('departamentos', this)">Departamentos</button>
         <button onclick="trocarAba('motoristas', this)">Motoristas</button>
+        <button onclick="trocarAba('veiculos', this)">Veículos</button>
     </nav>
 
     <main>
@@ -59,25 +60,29 @@
 
         <!-- CALENDÁRIO -->
         <div id="secao-calendario" class="secao">
-            <div class="cal-header">
+            <div class="cal-toolbar">
                 <div class="cal-nav">
-                    <button onclick="mudarMes(-1)">&#8249;</button>
+                    <button class="btn-hoje" onclick="calHoje()">Hoje</button>
+                    <button onclick="calAnterior()">&#8249;</button>
+                    <button onclick="calProximo()">&#8250;</button>
                     <span id="cal-titulo"></span>
-                    <button onclick="mudarMes(1)">&#8250;</button>
-                    <button class="btn-hoje" onclick="irParaHoje()">Hoje</button>
+                </div>
+                <div class="cal-visao">
+                    <button class="cal-visao-btn ativo" data-visao="mensal"
+                        onclick="alternarVisao('mensal')">Mês</button>
+                    <button class="cal-visao-btn" data-visao="semanal"
+                        onclick="alternarVisao('semanal')">Semana</button>
                 </div>
             </div>
-            <div class="cal-grid">
-                <div class="cal-dias-semana">
-                    <div>Dom</div>
-                    <div>Seg</div>
-                    <div>Ter</div>
-                    <div>Qua</div>
-                    <div>Qui</div>
-                    <div>Sex</div>
-                    <div>Sáb</div>
-                </div>
-                <div class="cal-dias" id="cal-dias"></div>
+            <div class="filtros" style="margin-bottom:16px">
+                <label>Filtrar por veículo
+                    <select id="cal-filtro-veiculo" onchange="renderizar()">
+                        <option value="">Todos os veículos</option>
+                    </select>
+                </label>
+            </div>
+            <div class="cal-container">
+                <div id="cal-corpo"></div>
             </div>
         </div>
 
@@ -88,36 +93,20 @@
             <div class="cadastro-container">
                 <div class="cadastro-form">
                     <h3>Cadastrar Funcionário</h3>
-                    <div class="form-group">
-                        <label>Nome completo</label>
-                        <input type="text" id="func-nome" placeholder="Nome completo">
-                    </div>
-                    <div class="form-group">
-                        <label>CPF</label>
-                        <input type="text" id="func-cpf" placeholder="000.000.000-00">
-                    </div>
-                    <div class="form-group">
-                        <label>E-mail</label>
-                        <input type="email" id="func-email" placeholder="email@empresa.com">
-                    </div>
-                    <div class="form-group">
-                        <label>Telefone</label>
-                        <input type="tel" id="func-telefone" placeholder="(00) 00000-0000">
-                    </div>
-                    <div class="form-group">
-                        <label>Matrícula</label>
-                        <input type="text" id="func-matricula" placeholder="Ex: 1001">
-                    </div>
-                    <div class="form-group">
-                        <label>Departamento</label>
-                        <select id="func-departamento">
+                    <div class="form-group"><label>Nome completo</label><input type="text" id="func-nome"
+                            placeholder="Nome completo"></div>
+                    <div class="form-group"><label>CPF</label><input type="text" id="func-cpf"
+                            placeholder="000.000.000-00"></div>
+                    <div class="form-group"><label>E-mail</label><input type="email" id="func-email"
+                            placeholder="email@empresa.com"></div>
+                    <div class="form-group"><label>Telefone</label><input type="tel" id="func-telefone"
+                            placeholder="(00) 00000-0000"></div>
+                    <div class="form-group"><label>Matrícula</label><input type="text" id="func-matricula"
+                            placeholder="Ex: 1001"></div>
+                    <div class="form-group"><label>Departamento</label><select id="func-departamento">
                             <option value="">Selecione...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Data de contratação</label>
-                        <input type="date" id="func-data">
-                    </div>
+                        </select></div>
+                    <div class="form-group"><label>Data de contratação</label><input type="date" id="func-data"></div>
                     <button class="btn-cadastrar" onclick="cadastrarFuncionario()">Cadastrar</button>
                 </div>
             </div>
@@ -130,14 +119,10 @@
             <div class="cadastro-container">
                 <div class="cadastro-form">
                     <h3>Cadastrar Departamento</h3>
-                    <div class="form-group">
-                        <label>Nome do departamento</label>
-                        <input type="text" id="depto-nome" placeholder="Ex: Tecnologia da Informação">
-                    </div>
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <input type="text" id="depto-descricao" placeholder="Descrição opcional">
-                    </div>
+                    <div class="form-group"><label>Nome</label><input type="text" id="depto-nome"
+                            placeholder="Ex: Tecnologia da Informação"></div>
+                    <div class="form-group"><label>Descrição</label><input type="text" id="depto-descricao"
+                            placeholder="Descrição opcional"></div>
                     <button class="btn-cadastrar" onclick="cadastrarDepartamento()">Cadastrar</button>
                 </div>
             </div>
@@ -150,24 +135,14 @@
             <div class="cadastro-container">
                 <div class="cadastro-form">
                     <h3>Cadastrar Motorista</h3>
-                    <div class="form-group">
-                        <label>Nome completo</label>
-                        <input type="text" id="mot-nome" placeholder="Nome completo">
-                    </div>
-                    <div class="form-group">
-                        <label>CPF</label>
-                        <input type="text" id="mot-cpf" placeholder="000.000.000-00">
-                    </div>
-                    <div class="form-group">
-                        <label>CNH</label>
-                        <input type="text" id="mot-cnh" placeholder="Número da CNH">
-                    </div>
-                    <div class="form-group">
-                        <label>Validade da CNH</label>
-                        <input type="date" id="mot-validade">
-                    </div>
-                    <div class="form-group">
-                        <label>Tipo</label>
+                    <div class="form-group"><label>Nome completo</label><input type="text" id="mot-nome"
+                            placeholder="Nome completo"></div>
+                    <div class="form-group"><label>CPF</label><input type="text" id="mot-cpf"
+                            placeholder="000.000.000-00"></div>
+                    <div class="form-group"><label>CNH</label><input type="text" id="mot-cnh"
+                            placeholder="Número da CNH"></div>
+                    <div class="form-group"><label>Validade da CNH</label><input type="date" id="mot-validade"></div>
+                    <div class="form-group"><label>Tipo</label>
                         <select id="mot-tipo">
                             <option value="interno">Interno</option>
                             <option value="externo">Externo</option>
@@ -177,21 +152,47 @@
                 </div>
             </div>
         </div>
-
+        <!-- VEÍCULOS -->
+        <div id="secao-veiculos" class="secao">
+            <h2>Veículos</h2>
+            <div id="conteudo-veiculos"></div>
+            <div class="cadastro-container">
+                <div class="cadastro-form">
+                    <h3>Cadastrar Veículo</h3>
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <select id="vei-tipo">
+                            <option value="Carro">Carro</option>
+                            <option value="Van">Van</option>
+                            <option value="Ônibus">Ônibus</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Placa</label><input type="text" id="vei-placa"
+                            placeholder="ABC-1234"></div>
+                    <div class="form-group"><label>Modelo</label><input type="text" id="vei-modelo"
+                            placeholder="Ex: Toyota Corolla"></div>
+                    <div class="form-group"><label>Capacidade (passageiros)</label><input type="number"
+                            id="vei-capacidade" placeholder="Ex: 5" min="1"></div>
+                    <button class="btn-cadastrar" onclick="cadastrarVeiculo()">Cadastrar</button>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- MODAL EVENTO -->
     <div class="modal-evento" id="modalEvento" onclick="fecharModal(event)">
         <div class="modal-evento-content">
             <div class="modal-evento-header">
-                <h3 id="modal-titulo">Solicitação</h3>
+                <h3 id="modal-titulo"></h3>
                 <button onclick="fecharModalBtn()">✕</button>
             </div>
             <div class="modal-evento-body" id="modal-body"></div>
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { iniciarCalendario, renderizar } from '/src/js/gestor/calendario.js'
+
         const nome = localStorage.getItem('nome')
         const perfil = localStorage.getItem('perfil')
         const token = localStorage.getItem('token')
@@ -199,57 +200,41 @@
         if (!nome || perfil !== 'gestor') window.location.href = '/login.html'
         document.getElementById('nomeGestor').textContent = nome
 
-        // ── ABAS ──
-        function trocarAba(aba, btn) {
+        window.trocarAba = (aba, btn) => {
             document.querySelectorAll('.secao').forEach(s => s.classList.remove('ativa'))
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('ativo'))
             document.getElementById('secao-' + aba).classList.add('ativa')
             btn.classList.add('ativo')
             if (aba === 'pendentes') carregarPendentes()
             if (aba === 'historico') carregarHistorico()
-            if (aba === 'calendario') renderCalendario()
+            if (aba === 'calendario') iniciarCalendario()
             if (aba === 'funcionarios') carregarFuncionarios()
             if (aba === 'departamentos') carregarDepartamentos()
             if (aba === 'motoristas') carregarMotoristas()
+            if (aba === 'veiculos') carregarVeiculos()
         }
 
-        // ── TABELA SOLICITAÇÕES ──
         function renderTabela(dados, mostrarAcoes = false) {
-            if (!dados || dados.length === 0)
-                return '<div class="vazio">Nenhuma solicitação encontrada.</div>'
-            const linhas = dados.map(s => `
-      <tr>
-        <td>#${s.numero_solicitacao}</td>
-        <td>${s.solicitante}</td>
-        <td>${s.motivo ?? '-'}</td>
-        <td>${s.local_origem ?? '-'}</td>
-        <td>${s.local_destino ?? '-'}</td>
-        <td>${s.data_partida ? new Date(s.data_partida).toLocaleDateString('pt-BR') : '-'}</td>
-        <td><span class="badge ${s.status}">${s.status}</span></td>
-        <td>${mostrarAcoes ? `
-          <div class="acoes">
-            <button class="btn-aprovar" onclick="aprovar('${s.id}')">Aprovar</button>
-            <button class="btn-recusar" onclick="recusar('${s.id}')">Recusar</button>
-          </div>` : '-'}</td>
-      </tr>`).join('')
-            return `<table>
-      <thead><tr>
-        <th>#</th><th>Solicitante</th><th>Motivo</th>
-        <th>Origem</th><th>Destino</th><th>Data</th><th>Status</th><th>Ações</th>
-      </tr></thead>
-      <tbody>${linhas}</tbody>
-    </table>`
+            if (!dados || dados.length === 0) return '<div class="vazio">Nenhuma solicitação encontrada.</div>'
+            const linhas = dados.map(s => `<tr>
+      <td>#${s.numero_solicitacao}</td><td>${s.solicitante}</td><td>${s.motivo ?? '-'}</td>
+      <td>${s.local_origem ?? '-'}</td><td>${s.local_destino ?? '-'}</td>
+      <td>${s.data_partida ? new Date(s.data_partida).toLocaleDateString('pt-BR') : '-'}</td>
+      <td><span class="badge ${s.status}">${s.status}</span></td>
+      <td>${mostrarAcoes ? `<div class="acoes">
+        <button class="btn-aprovar" onclick="aprovar('${s.id}')">Aprovar</button>
+        <button class="btn-recusar" onclick="recusar('${s.id}')">Recusar</button>
+      </div>` : '-'}</td></tr>`).join('')
+            return `<table><thead><tr><th>#</th><th>Solicitante</th><th>Motivo</th><th>Origem</th><th>Destino</th><th>Data</th><th>Status</th><th>Ações</th></tr></thead><tbody>${linhas}</tbody></table>`
         }
 
-        async function carregarPendentes() {
-            const res = await fetch('http://localhost:3000/api/gestor/pendentes', {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+        window.carregarPendentes = async () => {
+            const res = await fetch('http://localhost:3000/api/gestor/pendentes', { headers: { Authorization: `Bearer ${token}` } })
             const data = await res.json()
             document.getElementById('conteudo-pendentes').innerHTML = renderTabela(data.dados, true)
         }
 
-        async function carregarHistorico() {
+        window.carregarHistorico = async () => {
             const status = document.getElementById('filtro-status').value
             const dataInicio = document.getElementById('filtro-data-inicio').value
             const dataFim = document.getElementById('filtro-data-fim').value
@@ -257,17 +242,15 @@
             if (status) params.append('status', status)
             if (dataInicio) params.append('data_inicio', dataInicio)
             if (dataFim) params.append('data_fim', dataFim)
-            const res = await fetch(`http://localhost:3000/api/gestor/historico?${params}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+            const res = await fetch(`http://localhost:3000/api/gestor/historico?${params}`, { headers: { Authorization: `Bearer ${token}` } })
             const data = await res.json()
             document.getElementById('conteudo-historico').innerHTML = renderTabela(data.dados, false)
         }
 
-        async function aprovar(id) { await atualizarStatus(id, 'aprovado') }
-        async function recusar(id) { await atualizarStatus(id, 'cancelado') }
+        window.aprovar = async (id) => await atualizarStatus(id, 'aprovado')
+        window.recusar = async (id) => await atualizarStatus(id, 'cancelado')
 
-        async function atualizarStatus(id, status) {
+        window.atualizarStatus = async (id, status) => {
             const res = await fetch(`http://localhost:3000/api/gestor/solicitacao/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -277,213 +260,181 @@
             if (data.sucesso) { alert(`Solicitação ${status} com sucesso!`); carregarPendentes() }
         }
 
-        // ── CALENDÁRIO ──
-        const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
-        let hoje = new Date()
-        let calMes = hoje.getMonth()
-        let calAno = hoje.getFullYear()
-        let eventosCal = []
-
-        function mudarMes(dir) {
-            calMes += dir
-            if (calMes > 11) { calMes = 0; calAno++ }
-            if (calMes < 0) { calMes = 11; calAno-- }
-            renderCalendario()
-        }
-        function irParaHoje() { calMes = hoje.getMonth(); calAno = hoje.getFullYear(); renderCalendario() }
-
-        async function renderCalendario() {
-            document.getElementById('cal-titulo').textContent = `${meses[calMes]} ${calAno}`
-            const res = await fetch(`http://localhost:3000/api/gestor/calendario?mes=${calMes + 1}&ano=${calAno}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            const data = await res.json()
-            eventosCal = data.dados || []
-
-            const primeiroDia = new Date(calAno, calMes, 1).getDay()
-            const ultimoDia = new Date(calAno, calMes + 1, 0).getDate()
-            const diasAnteriores = new Date(calAno, calMes, 0).getDate()
-            let html = ''
-
-            for (let i = primeiroDia - 1; i >= 0; i--)
-                html += `<div class="cal-dia outro-mes"><div class="cal-dia-numero">${diasAnteriores - i}</div></div>`
-
-            for (let dia = 1; dia <= ultimoDia; dia++) {
-                const ehHoje = dia === hoje.getDate() && calMes === hoje.getMonth() && calAno === hoje.getFullYear()
-                const eventos = eventosCal.filter(e => new Date(e.data_partida).getUTCDate() === dia)
-                const visiveis = eventos.slice(0, 3)
-                const extras = eventos.length - 3
-                const eventosHtml = visiveis.map(e => `
-        <div class="cal-evento" onclick="abrirEvento('${e.id}', event)">
-          ${e.hora_partida ? formatarHora(e.hora_partida) + ' ' : ''}${e.solicitante}
-        </div>`).join('')
-                const maisHtml = extras > 0 ? `<div class="cal-mais">+${extras} mais</div>` : ''
-                html += `<div class="cal-dia${ehHoje ? ' hoje' : ''}">
-        <div class="cal-dia-numero">${dia}</div>${eventosHtml}${maisHtml}
-      </div>`
-            }
-
-            const restantes = (primeiroDia + ultimoDia) % 7 === 0 ? 0 : 7 - ((primeiroDia + ultimoDia) % 7)
-            for (let i = 1; i <= restantes; i++)
-                html += `<div class="cal-dia outro-mes"><div class="cal-dia-numero">${i}</div></div>`
-
-            document.getElementById('cal-dias').innerHTML = html
-        }
-
-        function formatarHora(hora) { return String(hora).slice(0, 5) }
-
-        function abrirEvento(id, event) {
-            event.stopPropagation()
-            const e = eventosCal.find(e => e.id === id)
-            if (!e) return
-            document.getElementById('modal-titulo').textContent = `Solicitação #${e.numero_solicitacao}`
-            document.getElementById('modal-body').innerHTML = `
-      <p><strong>Solicitante:</strong> ${e.solicitante}</p>
-      <p><strong>Motivo:</strong> ${e.motivo ?? '-'}</p>
-      <p><strong>Origem:</strong> ${e.local_origem ?? '-'}</p>
-      <p><strong>Destino:</strong> ${e.local_destino ?? '-'}</p>
-      <p><strong>Data:</strong> ${new Date(e.data_partida).toLocaleDateString('pt-BR')}</p>
-      <p><strong>Horário:</strong> ${formatarHora(e.hora_partida) || '-'}</p>`
-            document.getElementById('modalEvento').classList.add('aberto')
-        }
-
-        function fecharModal(event) {
-            if (event.target === document.getElementById('modalEvento'))
-                document.getElementById('modalEvento').classList.remove('aberto')
-        }
-        function fecharModalBtn() { document.getElementById('modalEvento').classList.remove('aberto') }
-
-        // ── FUNCIONÁRIOS ──
-        async function carregarFuncionarios() {
-            const res = await fetch('http://localhost:3000/api/cadastro/funcionarios', {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+        window.carregarFuncionarios = async () => {
+            const res = await fetch('http://localhost:3000/api/cadastro/funcionarios', { headers: { Authorization: `Bearer ${token}` } })
             const data = await res.json()
             const el = document.getElementById('conteudo-funcionarios')
-            if (!data.dados || data.dados.length === 0) {
-                el.innerHTML = '<div class="vazio">Nenhum funcionário cadastrado.</div>'; return
-            }
-            el.innerHTML = `<table>
-      <thead><tr><th>Matrícula</th><th>Nome</th><th>Departamento</th><th>Status</th></tr></thead>
-      <tbody>${data.dados.map(f => `
-        <tr>
-          <td>${f.matricula}</td>
-          <td>${f.nome}</td>
-          <td>${f.departamento}</td>
-          <td><span class="badge ativo">${f.status}</span></td>
-        </tr>`).join('')}
-      </tbody>
-    </table>`
-
-            // Preenche select de departamentos no form
+            if (!data.dados || data.dados.length === 0) { el.innerHTML = '<div class="vazio">Nenhum funcionário.</div>'; return }
+            el.innerHTML = `<table><thead><tr><th>Matrícula</th><th>Nome</th><th>Departamento</th><th>Status</th></tr></thead>
+      <tbody>${data.dados.map(f => `<tr><td>${f.matricula}</td><td>${f.nome}</td><td>${f.departamento}</td><td><span class="badge ativo">${f.status}</span></td></tr>`).join('')}</tbody></table>`
             const depRes = await fetch('http://localhost:3000/api/cadastro/departamentos')
             const depData = await depRes.json()
             const sel = document.getElementById('func-departamento')
             sel.innerHTML = '<option value="">Selecione...</option>'
-            depData.departamentos.forEach(d => {
-                sel.innerHTML += `<option value="${d.id}">${d.nome}</option>`
-            })
+            depData.departamentos.forEach(d => { sel.innerHTML += `<option value="${d.id}">${d.nome}</option>` })
         }
 
-        async function cadastrarFuncionario() {
+        window.cadastrarFuncionario = async () => {
             const payload = {
-                nome: document.getElementById('func-nome').value,
-                cpf: document.getElementById('func-cpf').value,
-                email: document.getElementById('func-email').value,
-                telefone: document.getElementById('func-telefone').value,
+                nome: document.getElementById('func-nome').value, cpf: document.getElementById('func-cpf').value,
+                email: document.getElementById('func-email').value, telefone: document.getElementById('func-telefone').value,
                 matricula: document.getElementById('func-matricula').value,
                 departamento_id: document.getElementById('func-departamento').value,
                 data_contratacao: document.getElementById('func-data').value
             }
             const res = await fetch('http://localhost:3000/api/cadastro/funcionario', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify(payload)
             })
             const data = await res.json()
-            if (data.sucesso) { alert('Funcionário cadastrado com sucesso!'); carregarFuncionarios() }
-            else alert('Erro: ' + data.erro)
+            if (data.sucesso) { alert('Funcionário cadastrado!'); carregarFuncionarios() } else alert('Erro: ' + data.erro)
         }
 
-        // ── DEPARTAMENTOS ──
-        async function carregarDepartamentos() {
+        window.carregarDepartamentos = async () => {
             const res = await fetch('http://localhost:3000/api/cadastro/departamentos')
             const data = await res.json()
             const el = document.getElementById('conteudo-departamentos')
-            if (!data.departamentos || data.departamentos.length === 0) {
-                el.innerHTML = '<div class="vazio">Nenhum departamento cadastrado.</div>'; return
-            }
-            el.innerHTML = `<table>
-      <thead><tr><th>ID</th><th>Nome</th><th>Descrição</th></tr></thead>
-      <tbody>${data.departamentos.map(d => `
-        <tr>
-          <td>${d.id}</td>
-          <td>${d.nome}</td>
-          <td>${d.descricao ?? '-'}</td>
-        </tr>`).join('')}
-      </tbody>
-    </table>`
+            if (!data.departamentos || data.departamentos.length === 0) { el.innerHTML = '<div class="vazio">Nenhum departamento.</div>'; return }
+            el.innerHTML = `<table><thead><tr><th>ID</th><th>Nome</th><th>Descrição</th></tr></thead>
+      <tbody>${data.departamentos.map(d => `<tr><td>${d.id}</td><td>${d.nome}</td><td>${d.descricao ?? '-'}</td></tr>`).join('')}</tbody></table>`
         }
 
-        async function cadastrarDepartamento() {
-            const payload = {
-                nome: document.getElementById('depto-nome').value,
-                descricao: document.getElementById('depto-descricao').value
-            }
+        window.cadastrarDepartamento = async () => {
+            const payload = { nome: document.getElementById('depto-nome').value, descricao: document.getElementById('depto-descricao').value }
             const res = await fetch('http://localhost:3000/api/cadastro/departamento', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify(payload)
             })
             const data = await res.json()
-            if (data.sucesso) { alert('Departamento cadastrado com sucesso!'); carregarDepartamentos() }
-            else alert('Erro: ' + data.erro)
+            if (data.sucesso) { alert('Departamento cadastrado!'); carregarDepartamentos() } else alert('Erro: ' + data.erro)
         }
 
-        // ── MOTORISTAS ──
-        async function carregarMotoristas() {
-            const res = await fetch('http://localhost:3000/api/cadastro/motoristas', {
+
+        window.cadastrarMotorista = async () => {
+            const payload = {
+                nome: document.getElementById('mot-nome').value, cpf: document.getElementById('mot-cpf').value,
+                cnh: document.getElementById('mot-cnh').value, validade_cnh: document.getElementById('mot-validade').value,
+                tipo: document.getElementById('mot-tipo').value
+            }
+            const res = await fetch('http://localhost:3000/api/cadastro/motorista', {
+                method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify(payload)
+            })
+            const data = await res.json()
+            if (data.sucesso) { alert('Motorista cadastrado!'); carregarMotoristas() } else alert('Erro: ' + data.erro)
+        }
+
+        window.carregarMotoristas = async () => {
+            const token = localStorage.getItem('token')
+
+            // Motoristas aprovados
+            const res = await fetch('http://localhost:3000/api/cadastro/motoristas/aprovados', {
                 headers: { Authorization: `Bearer ${token}` }
             })
             const data = await res.json()
             const el = document.getElementById('conteudo-motoristas')
-            if (!data.dados || data.dados.length === 0) {
-                el.innerHTML = '<div class="vazio">Nenhum motorista cadastrado.</div>'; return
+
+            // Motoristas pendentes
+            const resPend = await fetch('http://localhost:3000/api/cadastro/motoristas/pendentes', {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            const dataPend = await resPend.json()
+
+            let htmlPendentes = ''
+            if (dataPend.dados && dataPend.dados.length > 0) {
+                htmlPendentes = `
+      <h3 style="margin: 24px 0 12px; color: #856404;">⏳ Aguardando Aprovação</h3>
+      <table>
+        <thead><tr><th>Nome</th><th>CNH</th><th>Validade</th><th>Tipo</th><th>Ação</th></tr></thead>
+        <tbody>${dataPend.dados.map(m => `
+          <tr>
+            <td>${m.nome}</td>
+            <td>${m.cnh}</td>
+            <td>${m.validade_cnh ? new Date(m.validade_cnh).toLocaleDateString('pt-BR') : '-'}</td>
+            <td>${m.tipo}</td>
+            <td><button class="btn-aprovar" onclick="aprovarMotorista('${m.id}')">Aprovar</button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`
             }
-            el.innerHTML = `<table>
-      <thead><tr><th>Nome</th><th>CNH</th><th>Validade CNH</th><th>Tipo</th><th>Status</th></tr></thead>
-      <tbody>${data.dados.map(m => `
-        <tr>
-          <td>${m.nome}</td>
-          <td>${m.cnh}</td>
-          <td>${m.validade_cnh ? new Date(m.validade_cnh).toLocaleDateString('pt-BR') : '-'}</td>
-          <td>${m.tipo}</td>
-          <td><span class="badge ativo">${m.status}</span></td>
-        </tr>`).join('')}
-      </tbody>
-    </table>`
+
+            let htmlAprovados = ''
+            if (!data.dados || data.dados.length === 0) {
+                htmlAprovados = '<div class="vazio">Nenhum motorista aprovado.</div>'
+            } else {
+                htmlAprovados = `
+      <h3 style="margin-bottom: 12px; color: #155724;">✅ Motoristas Aprovados</h3>
+      <table>
+        <thead><tr><th>Nome</th><th>CNH</th><th>Validade</th><th>Tipo</th><th>Status</th></tr></thead>
+        <tbody>${data.dados.map(m => `
+          <tr>
+            <td>${m.nome}</td>
+            <td>${m.cnh}</td>
+            <td>${m.validade_cnh ? new Date(m.validade_cnh).toLocaleDateString('pt-BR') : '-'}</td>
+            <td>${m.tipo}</td>
+            <td><span class="badge aprovado">${m.status}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`
+            }
+
+            el.innerHTML = htmlPendentes + htmlAprovados
         }
 
-        async function cadastrarMotorista() {
-            const payload = {
-                nome: document.getElementById('mot-nome').value,
-                cpf: document.getElementById('mot-cpf').value,
-                cnh: document.getElementById('mot-cnh').value,
-                validade_cnh: document.getElementById('mot-validade').value,
-                tipo: document.getElementById('mot-tipo').value
+        window.aprovarMotorista = async (id) => {
+            const token = localStorage.getItem('token')
+            const res = await fetch(`http://localhost:3000/api/cadastro/motorista/${id}/aprovar`, {
+                method: 'PATCH',
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            const data = await res.json()
+            if (data.sucesso) {
+                alert('Motorista aprovado e agora disponível como motorista interno!')
+                carregarMotoristas()
+            } else {
+                alert('Erro: ' + data.erro)
             }
-            const res = await fetch('http://localhost:3000/api/cadastro/motorista', {
+        }
+
+
+        window.carregarVeiculos = async () => {
+            const res = await fetch('http://localhost:3000/api/cadastro/veiculos', {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            const data = await res.json()
+            const el = document.getElementById('conteudo-veiculos')
+            if (!data.dados || data.dados.length === 0) {
+                el.innerHTML = '<div class="vazio">Nenhum veículo cadastrado.</div>'; return
+            }
+            el.innerHTML = `<table>
+    <thead><tr><th>Tipo</th><th>Placa</th><th>Modelo</th><th>Capacidade</th><th>Status</th></tr></thead>
+    <tbody>${data.dados.map(v => `<tr>
+      <td>${v.tipo}</td><td>${v.placa}</td><td>${v.modelo ?? '-'}</td>
+      <td>${v.capacidade ?? '-'}</td>
+      <td><span class="badge ativo">${v.status}</span></td>
+    </tr>`).join('')}</tbody>
+  </table>`
+        }
+
+        window.cadastrarVeiculo = async () => {
+            const payload = {
+                tipo: document.getElementById('vei-tipo').value,
+                placa: document.getElementById('vei-placa').value,
+                modelo: document.getElementById('vei-modelo').value,
+                capacidade: document.getElementById('vei-capacidade').value
+            }
+            const res = await fetch('http://localhost:3000/api/cadastro/veiculo', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 body: JSON.stringify(payload)
             })
             const data = await res.json()
-            if (data.sucesso) { alert('Motorista cadastrado com sucesso!'); carregarMotoristas() }
+            if (data.sucesso) { alert('Veículo cadastrado!'); carregarVeiculos() }
             else alert('Erro: ' + data.erro)
         }
 
-        function sair() { localStorage.clear(); window.location.href = '/login.html' }
+
+        window.sair = () => { localStorage.clear(); window.location.href = '/login.html' }
 
         carregarPendentes()
     </script>
