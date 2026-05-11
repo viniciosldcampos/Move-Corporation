@@ -1,4 +1,5 @@
 import prisma from '../database/prisma.js'
+import bcrypt from 'bcrypt'
 
 const serializeBigInt = (obj) =>
   JSON.parse(JSON.stringify(obj, (_, v) => typeof v === 'bigint' ? v.toString() : v))
@@ -13,13 +14,37 @@ export async function listarDepartamentos(req, res) {
   }
 }
 
+export async function listarCargos(req, res) {
+  try {
+    const cargos = await prisma.cargos.findMany({ orderBy: { nome: 'asc' } })
+    const resultado = cargos.map(c => ({ id: c.id.toString(), nome: c.nome, nivel: c.nivel }))
+    res.json({ sucesso: true, dados: resultado })
+  } catch (error) {
+    res.status(500).json({ erro: error.message })
+  }
+}
+
 export async function listarFuncionarios(req, res) {
   try {
-    const funcionarios = await prisma.funcionarios.findMany({ where: { status: 'ativo' }, orderBy: { id: 'asc' } })
+    const funcionarios = await prisma.funcionarios.findMany({ orderBy: { id: 'asc' } })
     const resultado = await Promise.all(funcionarios.map(async (f) => {
       const pessoa = await prisma.pessoas.findFirst({ where: { id: f.pessoa_id } })
       const depto = f.departamento_id ? await prisma.departamentos.findFirst({ where: { id: f.departamento_id } }) : null
-      return { id: f.id.toString(), matricula: f.matricula, nome: pessoa?.nome ?? '-', departamento: depto?.nome ?? '-', status: f.status }
+      const cargo = f.cargo_id ? await prisma.cargos.findFirst({ where: { id: f.cargo_id } }) : null
+      return {
+        id: f.id.toString(),
+        matricula: f.matricula,
+        nome: pessoa?.nome ?? '-',
+        cpf: pessoa?.cpf ?? '',
+        rg: pessoa?.rg ?? '',
+        email: pessoa?.email ?? '',
+        telefone: pessoa?.telefone ?? '',
+        departamento: depto?.nome ?? '-',
+        departamento_id: f.departamento_id?.toString() ?? '',
+        cargo: cargo?.nome ?? '-',
+        cargo_id: f.cargo_id?.toString() ?? '',
+        status: f.status
+      }
     }))
     res.json({ sucesso: true, dados: resultado })
   } catch (error) {
@@ -89,39 +114,78 @@ export async function cadastrarDepartamento(req, res) {
   }
 }
 
-export async function cadastrarFuncionario(req, res) {
-  const { nome, cpf, email, telefone, matricula, departamento_id, data_contratacao } = req.body
+export async function cadastrarFuncionarioComUsuario(req, res) {
+  const { nome, cpf, rg, email, telefone, matricula, departamento_id, cargo_id, data_contratacao, perfil } = req.body
   try {
-    const pessoa = await prisma.pessoas.create({ data: { nome, cpf, email, telefone } })
+    const pessoa = await prisma.pessoas.create({
+      data: { nome, cpf, rg, email, telefone }
+    })
+
     const funcionario = await prisma.funcionarios.create({
       data: {
         pessoa_id: Number(pessoa.id),
         matricula,
         departamento_id: departamento_id ? Number(departamento_id) : null,
+        cargo_id: cargo_id ? Number(cargo_id) : null,
         data_contratacao: new Date(data_contratacao),
         status: 'ativo'
       }
     })
+
+    const senhaLimpa = cpf.replace(/\D/g, '')
+    const senhaHash = await bcrypt.hash(senhaLimpa, 10)
+
+    await prisma.usuarios.create({
+      data: {
+        pessoa_id: Number(pessoa.id),
+        email,
+        senha_hash: senhaHash,
+        perfil: perfil ?? 'usuario',
+        ativo: true
+      }
+    })
+
     res.status(201).json({ sucesso: true, id: funcionario.id.toString() })
   } catch (error) {
     res.status(500).json({ erro: error.message })
   }
 }
 
-export async function cadastrarMotorista(req, res) {
-  const { nome, cpf, cnh, validade_cnh, tipo } = req.body
+export async function editarFuncionario(req, res) {
+  const { id } = req.params
+  const { nome, cpf, rg, email, telefone, matricula, departamento_id, cargo_id } = req.body
   try {
-    const pessoa = await prisma.pessoas.create({ data: { nome, cpf } })
-    const motorista = await prisma.motoristas.create({
+    const funcionario = await prisma.funcionarios.findFirst({ where: { id: BigInt(id) } })
+    if (!funcionario) return res.status(404).json({ erro: 'Funcionário não encontrado.' })
+
+    await prisma.pessoas.update({
+      where: { id: BigInt(funcionario.pessoa_id) },
+      data: { nome, cpf, rg, email, telefone }
+    })
+
+    await prisma.funcionarios.update({
+      where: { id: BigInt(id) },
       data: {
-        pessoa_id: Number(pessoa.id),
-        cnh,
-        validade_cnh: new Date(validade_cnh),
-        tipo: tipo ?? 'externo',
-        status: tipo === 'interno' ? 'aprovado' : 'pendente'
+        matricula,
+        departamento_id: departamento_id ? Number(departamento_id) : null,
+        cargo_id: cargo_id ? Number(cargo_id) : null
       }
     })
-    res.status(201).json({ sucesso: true, id: motorista.id.toString() })
+
+    res.json({ sucesso: true })
+  } catch (error) {
+    res.status(500).json({ erro: error.message })
+  }
+}
+
+export async function desativarFuncionario(req, res) {
+  const { id } = req.params
+  try {
+    await prisma.funcionarios.update({
+      where: { id: BigInt(id) },
+      data: { status: 'inativo' }
+    })
+    res.json({ sucesso: true })
   } catch (error) {
     res.status(500).json({ erro: error.message })
   }
@@ -147,6 +211,115 @@ export async function cadastrarVeiculo(req, res) {
       data: { tipo, placa: placa.toUpperCase(), modelo, capacidade: capacidade ? parseInt(capacidade) : null, status: 'disponivel' }
     })
     res.status(201).json({ sucesso: true, id: veiculo.id.toString() })
+  } catch (error) {
+    res.status(500).json({ erro: error.message })
+  }
+}
+
+export async function cadastrarMotorista(req, res) {
+  const { nome, cpf, cnh, validade_cnh, tipo } = req.body
+  try {
+    const pessoa = await prisma.pessoas.create({ data: { nome, cpf } })
+    const motorista = await prisma.motoristas.create({
+      data: {
+        pessoa_id: Number(pessoa.id),
+        cnh,
+        validade_cnh: new Date(validade_cnh),
+        tipo: tipo ?? 'externo',
+        status: tipo === 'interno' ? 'aprovado' : 'pendente'
+      }
+    })
+    res.status(201).json({ sucesso: true, id: motorista.id.toString() })
+  } catch (error) {
+    res.status(500).json({ erro: error.message })
+  }
+}
+
+export async function editarDepartamento(req, res) {
+  const { id } = req.params
+  const { nome, descricao } = req.body
+  try {
+    await prisma.departamentos.update({
+      where: { id: BigInt(id) },
+      data: { nome, descricao }
+    })
+    res.json({ sucesso: true })
+  } catch (error) {
+    res.status(500).json({ erro: error.message })
+  }
+}
+
+export async function desativarDepartamento(req, res) {
+  const { id } = req.params
+  try {
+    await prisma.departamentos.update({
+      where: { id: BigInt(id) },
+      data: { descricao: '[INATIVO]' }
+    })
+    res.json({ sucesso: true })
+  } catch (error) {
+    res.status(500).json({ erro: error.message })
+  }
+}
+
+export async function editarVeiculo(req, res) {
+  const { id } = req.params
+  const { tipo, placa, modelo, capacidade, status } = req.body
+  try {
+    await prisma.veiculos.update({
+      where: { id: BigInt(id) },
+      data: { tipo, placa: placa?.toUpperCase(), modelo, capacidade: capacidade ? parseInt(capacidade) : null, status }
+    })
+    res.json({ sucesso: true })
+  } catch (error) {
+    res.status(500).json({ erro: error.message })
+  }
+}
+
+export async function desativarVeiculo(req, res) {
+  const { id } = req.params
+  try {
+    await prisma.veiculos.update({
+      where: { id: BigInt(id) },
+      data: { status: 'inativo' }
+    })
+    res.json({ sucesso: true })
+  } catch (error) {
+    res.status(500).json({ erro: error.message })
+  }
+}
+
+export async function editarMotorista(req, res) {
+  const { id } = req.params
+  const { nome, cpf, cnh, validade_cnh } = req.body
+  try {
+    const motorista = await prisma.motoristas.findFirst({ where: { id: BigInt(id) } })
+    if (!motorista) return res.status(404).json({ erro: 'Motorista não encontrado.' })
+
+    await prisma.pessoas.update({
+      where: { id: BigInt(motorista.pessoa_id) },
+      data: { nome, cpf }
+    })
+
+    await prisma.motoristas.update({
+      where: { id: BigInt(id) },
+      data: { cnh, validade_cnh: new Date(validade_cnh) }
+    })
+
+    res.json({ sucesso: true })
+  } catch (error) {
+    res.status(500).json({ erro: error.message })
+  }
+}
+
+export async function desativarMotorista(req, res) {
+  const { id } = req.params
+  try {
+    await prisma.motoristas.update({
+      where: { id: BigInt(id) },
+      data: { status: 'inativo' }
+    })
+    res.json({ sucesso: true })
   } catch (error) {
     res.status(500).json({ erro: error.message })
   }
