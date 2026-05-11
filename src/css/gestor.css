@@ -46,12 +46,13 @@ nav {
     border-bottom: 2px solid #e0e0e0;
     display: flex;
     padding: 0 32px;
+    flex-wrap: wrap;
 }
 
 nav button {
     background: none;
     border: none;
-    padding: 14px 24px;
+    padding: 14px 20px;
     cursor: pointer;
     font-size: 14px;
     color: #666;
@@ -83,7 +84,12 @@ h2 {
     color: #444;
 }
 
-/* FILTROS */
+h3 {
+    margin-bottom: 12px;
+    font-size: 15px;
+    color: #555;
+}
+
 .filtros {
     background: white;
     padding: 16px;
@@ -122,7 +128,6 @@ h2 {
     font-size: 14px;
 }
 
-/* TABELA */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -185,6 +190,11 @@ tbody tr:hover {
     color: #383d41;
 }
 
+.badge.ativo {
+    background: #d4edda;
+    color: #155724;
+}
+
 .acoes {
     display: flex;
     gap: 8px;
@@ -219,31 +229,86 @@ tbody tr:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-/* CALENDÁRIO */
-.cal-header {
+.cadastro-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 32px;
+}
+
+.cadastro-form {
+    background: white;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 14px;
+}
+
+.form-group label {
+    font-size: 13px;
+    color: #555;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    padding: 9px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #1a73e8;
+}
+
+.btn-cadastrar {
+    background: #1a73e8;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
+    margin-top: 4px;
+}
+
+.btn-cadastrar:hover {
+    background: #1558b0;
+}
+
+/* ── CALENDÁRIO ── */
+.cal-toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.cal-header h2 {
-    margin: 0;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .cal-nav {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
 }
 
 .cal-nav button {
     background: white;
     border: 1px solid #ddd;
-    padding: 8px 14px;
+    padding: 7px 14px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 15px;
     color: #1a73e8;
 }
 
@@ -251,71 +316,106 @@ tbody tr:hover {
     background: #eef4ff;
 }
 
-.cal-nav span {
+.cal-nav .btn-hoje {
+    font-size: 13px;
+    padding: 7px 16px;
+    font-weight: bold;
+}
+
+#cal-titulo {
     font-size: 18px;
     font-weight: bold;
-    color: #333;
-    min-width: 200px;
+    color: #222;
+    min-width: 220px;
     text-align: center;
 }
 
-.cal-nav .btn-hoje {
-    font-size: 13px;
-    padding: 8px 16px;
+.cal-visao {
+    display: flex;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    overflow: hidden;
 }
 
-.cal-grid {
+.cal-visao-btn {
+    background: white;
+    border: none;
+    padding: 7px 18px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #555;
+}
+
+.cal-visao-btn.ativo {
+    background: #1a73e8;
+    color: white;
+    font-weight: bold;
+}
+
+.cal-visao-btn:not(:last-child) {
+    border-right: 1px solid #ddd;
+}
+
+.cal-container {
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     overflow: hidden;
 }
 
-.cal-dias-semana {
+/* MENSAL */
+.cal-semana-header {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    background: #1a73e8;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
 }
 
-.cal-dias-semana div {
+.cal-semana-header div {
     padding: 10px;
     text-align: center;
-    font-size: 13px;
-    font-weight: bold;
-    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
 }
 
-.cal-dias {
+.cal-grade-mensal {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     border-left: 1px solid #e0e0e0;
     border-top: 1px solid #e0e0e0;
 }
 
-.cal-dia {
-    min-height: 110px;
-    padding: 6px;
+.cal-dia-mensal {
+    min-height: 100px;
+    padding: 4px 6px;
     border-right: 1px solid #e0e0e0;
     border-bottom: 1px solid #e0e0e0;
     cursor: pointer;
     transition: background 0.1s;
 }
 
-.cal-dia:hover {
+.cal-dia-mensal:hover {
     background: #f0f7ff;
 }
 
-.cal-dia.outro-mes {
+.cal-dia-mensal.outro-mes {
+    background: #fafafa;
+    cursor: default;
+}
+
+.cal-dia-mensal.outro-mes:hover {
     background: #fafafa;
 }
 
-.cal-dia.hoje {
+.cal-dia-mensal.hoje {
     background: #e8f0fe;
 }
 
-.cal-dia-numero {
+.cal-dia-num {
     font-size: 13px;
-    font-weight: bold;
+    font-weight: 600;
     color: #555;
     width: 26px;
     height: 26px;
@@ -323,39 +423,165 @@ tbody tr:hover {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 
-.cal-dia.hoje .cal-dia-numero {
-    background: #1a73e8;
-    color: white;
+.hoje-num {
+    background: #1a73e8 !important;
+    color: white !important;
 }
 
-.cal-evento {
+.cal-evento-chip {
     background: #1a73e8;
     color: white;
     font-size: 11px;
-    padding: 2px 6px;
+    padding: 2px 7px;
     border-radius: 4px;
     margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    cursor: pointer;
+    cursor: grab;
+    user-select: none;
 }
 
-.cal-evento:hover {
+.cal-evento-chip:hover {
     background: #1558b0;
+}
+
+.cal-evento-chip:active {
+    cursor: grabbing;
 }
 
 .cal-mais {
     font-size: 11px;
     color: #1a73e8;
-    padding: 2px 4px;
+    padding: 1px 4px;
     cursor: pointer;
 }
 
-/* MODAL EVENTO */
+/* SEMANAL */
+.cal-semanal-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.cal-semanal-header {
+    display: grid;
+    grid-template-columns: 56px repeat(7, 1fr);
+    border-bottom: 2px solid #e0e0e0;
+    background: #f8f9fa;
+}
+
+.cal-hora-col {
+    padding: 10px;
+}
+
+.cal-semanal-dia-header {
+    padding: 10px 4px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.cal-semanal-dia-header:hover {
+    background: #eef4ff;
+}
+
+.cal-semanal-dia-header.hoje {
+    color: #1a73e8;
+}
+
+.cal-semanal-diaSemana {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.cal-semanal-diaNum {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.cal-semanal-diaNum.hoje-num {
+    background: #1a73e8;
+    color: white;
+}
+
+.cal-semanal-body {
+    display: grid;
+    grid-template-columns: 56px repeat(7, 1fr);
+    overflow-y: auto;
+    max-height: 600px;
+    position: relative;
+}
+
+.cal-horas-col {
+    border-right: 1px solid #e0e0e0;
+}
+
+.cal-hora-label {
+    height: 40px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: #999;
+    text-align: right;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.cal-semanal-col {
+    position: relative;
+    border-right: 1px solid #e0e0e0;
+}
+
+.cal-semanal-slot {
+    height: 40px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+}
+
+.cal-semanal-slot:hover {
+    background: #f0f7ff;
+}
+
+.cal-evento-semanal {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    min-height: 36px;
+    background: #1a73e8;
+    color: white;
+    font-size: 11px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    cursor: grab;
+    z-index: 2;
+    overflow: hidden;
+    user-select: none;
+}
+
+.cal-evento-semanal:hover {
+    background: #1558b0;
+}
+
+.cal-evento-semanal:active {
+    cursor: grabbing;
+}
+
+.cal-evento-semanal span {
+    display: block;
+    font-weight: bold;
+}
+
+/* MODAL */
 .modal-evento {
     display: none;
     position: fixed;

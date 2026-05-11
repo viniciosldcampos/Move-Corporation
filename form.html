@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Move-Corporation</title>
-    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/form.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
@@ -82,7 +82,7 @@
             <!-- Campo de Seleção do Carro -->
             <div class="selectCar">
                 <label for="">Veículo</label>
-                <select>
+                <select id="selectVeiculo">
                     <option>Carro</option>
                     <option>Van</option>
                     <option>Ônibus</option>
@@ -193,10 +193,11 @@
                     <button class="close-btn" type="button" onclick="closeModalExternalDriver()">❌</button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" name="" id="" placeholder="Nome do motorista">
-                    <input type="text" name="" id="" placeholder="Numero do R.G">
-                    <input type="text" name="" id="" placeholder="Numero do CPF">
-                    <input type="text" name="" id="" placeholder="Numero da CNH">
+                    <input type="text" id="ext-nome" placeholder="Nome do motorista">
+                    <input type="text" id="ext-rg" placeholder="Numero do R.G">
+                    <input type="text" id="ext-cpf" placeholder="Numero do CPF">
+                    <input type="text" id="ext-cnh" placeholder="Numero da CNH">
+                    <input type="date" id="ext-validade" placeholder="Validade da CNH">
                 </div>
                 <label class="file-upload">
                     <span>📎 Anexar documentos</span>
