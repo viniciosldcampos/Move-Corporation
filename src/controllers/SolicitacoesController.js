@@ -1,5 +1,13 @@
 import prisma from '../database/prisma.js'
 
+function converterHora(hora) {
+  if (!hora) return null
+  // Converte "15:52" para um DateTime válido
+  const [h, m] = hora.split(':')
+  const d = new Date(1970, 0, 1, parseInt(h), parseInt(m), 0)
+  return d
+}
+
 export async function criarSolicitacao(req, res) {
   const {
     solicitante_id,
@@ -32,23 +40,10 @@ export async function criarSolicitacao(req, res) {
         veiculo_id: veiculo_id ? parseInt(veiculo_id) : null,
         motorista_id: motorista_id ? parseInt(motorista_id) : null,
         ajudantes: parseInt(ajudantes) || 0,
-
-        data_partida: data_partida && hora_partida
-          ? new Date(`${data_partida}T${hora_partida}:00`)
-          : null,
-
-        hora_partida: data_partida && hora_partida
-          ? new Date(`${data_partida}T${hora_partida}:00`)
-          : null,
-
-        data_chegada: data_chegada && hora_chegada
-          ? new Date(`${data_chegada}T${hora_chegada}:00`)
-          : null,
-
-        hora_chegada: data_chegada && hora_chegada
-          ? new Date(`${data_chegada}T${hora_chegada}:00`)
-          : null,
-
+        data_partida: data_partida ? new Date(data_partida) : null,
+        hora_partida: converterHora(hora_partida),
+        data_chegada: data_chegada ? new Date(data_chegada) : null,
+        hora_chegada: converterHora(hora_chegada),
         local_origem,
         local_destino,
       }
